@@ -19,7 +19,7 @@ class Waveform:
     def __init__(self, wave_form_dict):
         try:
             self.waveform = pd.DataFrame.from_dict(wave_form_dict['Waveform'], orient='index')
-            if np.any(waveform_pd[1:]['x0'].values != waveform_pd[:-1]['x1'].values):
+            if np.any(self.waveform[1:]['x0'].values != self.waveform[:-1]['x1'].values):
                 warnings.warn("check the set points - they are not continuous")
                 indexOfConflicts = np.nonzero(self.waveform[1:]['x0'].values - self.waveform[:-1]['x1'].values)
                 for i in range(len(indexOfConflicts)):

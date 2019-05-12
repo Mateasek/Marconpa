@@ -39,7 +39,7 @@ class Channel:
 
         return cls(Enabled=enabled, attributes=attributes, waveforms=waveforms)
 
-    def as_dict(self):
+    def as_lisfofstrings(self):
 
         fields = ["{"]
         for attrib in self.__attrs_attrs__:
@@ -51,6 +51,11 @@ class Channel:
         fields.append("}")
 
         return fields
+
+    def as_string(self):
+        listofstrings = self.as_lisfofstrings()
+        text = "\n".join(listofstrings)
+        return text
 
 def dict2stringlist(data, depth = 0):
 
@@ -98,7 +103,7 @@ if __name__ == "__main__":
 
 
     fch = Channel.parsed_channel(conf["FeedbackChannel"])
-    a = fch.as_dict()
+    a = fch.as_lisfofstrings()
     b = "\n".join(a)
 
     with open("test.txt", "w") as filesave:

@@ -1,8 +1,6 @@
-from Marconpa.core.parser.lark import MarteConfigParser
-from Marconpa.core.waveform import Waveform
+from Marconpa.core.configs.wave_form import Waveform
 
-from typing import Any, Dict, Union
-import re
+from typing import Dict, Union
 import attr
 
 
@@ -33,7 +31,7 @@ class Channel:
             if i == "Enabled":
                 enabled = Waveform(data["Enabled"])
             elif type(data[i]) is dict and not i == "Enabled":
-                waveforms[i] = Waveform(parsed_dict=data[i])
+                waveforms[i] = Waveform(wave_form_dict=data[i])
             else:
                 attributes[i] = data[i]
 

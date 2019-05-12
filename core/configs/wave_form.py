@@ -17,23 +17,32 @@ class Waveform:
     """
 
     def __init__(self, wave_form_dict):
+        """
+        read and check wave form
+        :param wave_form_dict:
+        """
         try:
             self.waveform = pd.DataFrame.from_dict(wave_form_dict['Waveform'], orient='index')
-            if np.any(waveform_pd[1:]['x0'].values != waveform_pd[:-1]['x1'].values):
-                warnings.warn("check the set points - they are not continuous")
-                indexOfConflicts = np.nonzero(self.waveform[1:]['x0'].values - self.waveform[:-1]['x1'].values)
-                for i in range(len(indexOfConflicts)):
-                    if self.waveform.iloc[indexOfConflicts[i] + 1]['x0'].values > \
-                            self.waveform.iloc[indexOfConflicts[i]]['x1'].values:
-                        print('Times subinterval number {ni} ends latter than the next interval starts. End set to \
-                        the smaller time'.format(ni=indexOfConflicts[i]))
-                        self.waveform.at[indexOfConflicts[i], 'x1'] = self.waveform.iloc[1][['x0']].values[0]
-                    else:
-                        print('Times subinterval number {ni} ends earlier than the next interval starts. Gap filled \
-                                                by zeros'.format(ni=indexOfConflicts[i]))
-                        if wave_form_dict['NumberOfIntervals'] < len(self.waveform.index):
-                            wave_form_dict['NumberOfIntervals'] = len(self.waveform.index)
-
+            if np.any(self.waveform.iloc[:]['x0'] != self.waveform.sort_values(by=['x0']).iloc[:]['x0']):
+                warnings.warn("Time intervals are not sorted ")
+                if np.any(self.waveform[1:]['x0'].values != self.waveform[:-1]['x1'].values):
+                    warnings.warn("check the set points - they are not continuous")
+                    indexOfConflicts = np.nonzero(self.waveform[1:]['x0'].values - self.waveform[:-1]['x1'].values)
+                    for i in range(len(indexOfConflicts)):
+                        if self.waveform.iloc[indexOfConflicts[i + 1]]['x0'].values > \
+                                self.waveform.iloc[indexOfConflicts[i]]['x1'].values:
+                            print('Times subinterval number {ni} ends latter than the next interval starts. \
+                            End time {t_end} of this interval set to  the time {t_begin} when next interval\
+                            starts.'.format(ni=indexOfConflicts[i],
+                                            t_end=self.waveform.iloc[indexOfConflicts[i + 1]]['x0'].values[0],
+                                            t_begin=self.waveform.iloc[indexOfConflicts[i]]['x1'].values[0]))
+                            self.waveform.at[indexOfConflicts[i], 'x1'] = self.waveform.iloc[i + 1][['x0']].values[0]
+                        else:
+                            print('Times subinterval number {ni} ends earlier than the next interval starts. Gap filled\
+                                                    by zeros'.format(ni=indexOfConflicts[i]))
+                            if wave_form_dict['NumberOfIntervals'] < len(self.waveform.index):
+                                wave_form_dict['NumberOfIntervals'] = len(self.waveform.index)
+                                pokus = self.waveform.set_index('x0')
 
 
 
@@ -55,6 +64,11 @@ class Waveform:
             self.waveform = {'NumberOfIntervals': 0}
 
     def return_value(self, t_value):
+        """
+        gives y value for given time point
+        :param t_value:  requested time point
+        :return: y_value
+        """
         x_axis = [row[1][col] for row in self.waveform.iterrows() for col in ['x0', 'x1']]
         y_axis = [row[1][col] for row in self.waveform.iterrows() for col in ['y0', 'y1']]
         x_values = x_axis[::2]
@@ -77,9 +91,19 @@ class Waveform:
         return y_value
 
     def return_SetPoints(self):
-        x_axis = [row[1][col] for row in self.waveform.iterrows() for col in ['x0', 'x1']]
-        y_axis = [row[1][col] for row in self.waveform.iterrows() for col in ['y0', 'y1']]
-        return x_axis, y_axis
+        """
+        gives set points of time intervals in waveform
+        :return: x_axis = set_points
+        """
+        # x_axis = [row[1][col] for row in self.waveform.iterrows() for col in ['x0', 'x1']]
+        # y_axis = [row[1][col] for row in self.waveform.iterrows() for col in ['y0', 'y1']]
+        set_points = {'x0': self.waveform[:]['x1'].values, 'x1': self.waveform[:]['x1'].values, \
+                      'y0': self.waveform[:]['y0'].values, 'y1': self.waveform[:]['y1'].values}
+        return set_points
 
     def export_waveform(self):
+        """
+        write pandas to dictionary
+        :return:
+        """
         return self.waveform.to_dict(orient='index')

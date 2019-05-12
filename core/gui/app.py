@@ -84,10 +84,9 @@ def display_output(rows, columns):
 def select_config_file(contents):
     #get file content
     content_type, content_string = contents.split(',')
-    decoded = base64.b64decode(content_string)
+    decoded = base64.b64decode(content_string).decode()
     data_toplot = parse_config(decoded)
-
-
+    return data_toplot
 
 def parse_config(file_coontents):
 
@@ -99,7 +98,9 @@ def parse_config(file_coontents):
 
     data_toplot = []
 
-    for index in range(len(waveform)
+    for index in range(waveform["x0"].shape[0]):
+        data_toplot.append({"time":waveform["x0"][index], "values":waveform["y0"][index]})
+        data_toplot.append({"time":waveform["x1"][index], "values":waveform["y1"][index]})
 
     return data_toplot
 

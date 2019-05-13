@@ -47,7 +47,7 @@ row = html.Div(
                             dash_table.DataTable(
                                 id="table-editing-simple",
                                 columns=[
-                                    {"name": i, "id": i} for i in ["time", "values"]
+                                    {"name": i, "id": i} for i in ["index", "x0", "x1", "y0", "y1"]
                                 ],
                                 data=[
                                 ],
@@ -75,7 +75,7 @@ app.layout = dbc.Container([row])
 )
 def display_output(rows, columns):
     df = pd.DataFrame(rows, columns=[c["name"] for c in columns])
-    return {"data": [{"x": df[df.columns[0]], "y": df[df.columns[1]], "type": "line"}]}
+    return {"data": [{"x": [row["x0"], row["x1"]], "y": [row["y0"], row["y1"]], "type": "line"} for row in rows]}
 
 
 @app.callback(Output("table-editing-simple", "data"),
@@ -99,9 +99,7 @@ def parse_config(file_coontents):
     data_toplot = []
 
     for index in range(waveform["x0"].shape[0]):
-        data_toplot.append({"time":waveform["x0"][index], "values":waveform["y0"][index]})
-        data_toplot.append({"time":waveform["x1"][index], "values":waveform["y1"][index]})
-
+        data_toplot.append({"index": index, "x0": waveform["x0"][index], "x1":waveform["x1"][index], "y0":waveform["y0"][index], "y1":waveform["y1"][index]})
     return data_toplot
 
 

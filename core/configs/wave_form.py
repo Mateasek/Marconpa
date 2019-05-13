@@ -97,7 +97,7 @@ class Waveform:
         """
         # x_axis = [row[1][col] for row in self.waveform.iterrows() for col in ['x0', 'x1']]
         # y_axis = [row[1][col] for row in self.waveform.iterrows() for col in ['y0', 'y1']]
-        set_points = {'x0': self.waveform[:]['x1'].values, 'x1': self.waveform[:]['x1'].values, \
+        set_points = {'x0': self.waveform[:]['x0'].values, 'x1': self.waveform[:]['x1'].values, \
                       'y0': self.waveform[:]['y0'].values, 'y1': self.waveform[:]['y1'].values}
         return set_points
 

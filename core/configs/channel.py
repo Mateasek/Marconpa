@@ -1,5 +1,5 @@
 from Marconpa.core.configs.wave_form import Waveform
-
+from Marconpa.core.utils.conversions import dict2stringlist, list2string
 from typing import Dict, Union
 import attr
 
@@ -37,16 +37,26 @@ class Channel:
 
         return cls(Enabled=enabled, attributes=attributes, waveforms=waveforms)
 
-    def as_lisfofstrings(self):
+    def as_lisfofstrings(self, depth=0):
 
-        fields = ["{"]
-        for attrib in self.__attrs_attrs__:
-            value = getattr(self, attrib.name)
-            if isinstance(value, dict):
-                fields += dict2stringlist(value)
+        fields = []
+        for attrib in self.attributes.items():
+            if isinstance(attrib[1], list):
+                fields+= ["\t" * depth + str(attrib[0]) + " = " + list2string(attrib[1])]
             else:
-                fields += dict2stringlist({attrib.name: value})
-        fields.append("}")
+                fields += dict2stringlist({attrib[0]: attrib[1]}, depth=depth)
+
+        fields.append("\t" * depth + "Enabled = ")
+        fields.append("\t" * depth + "{")
+        fields += self.Enabled.export_as_listofstring(depth=depth+1)
+        fields.append("\t" * depth + "}")
+
+        for attrib in self.waveforms.items():
+            if isinstance(attrib[1], Waveform):
+                fields.append("\t" * depth + str(attrib[0]))
+                fields.append("\t" * depth + "{")
+                fields += attrib[1].export_as_listofstring(depth=depth+1)
+                fields.append("\t" * depth + "}")
 
         return fields
 
@@ -55,44 +65,6 @@ class Channel:
         text = "\n".join(listofstrings)
         return text
 
-def dict2stringlist(data, depth = 0):
-
-    if depth > 0:
-        lines = ["\t" * depth + "{"]
-    else:
-        lines = []
-
-    depth += 1
-    for i in data.keys():
-        if isinstance(data[i], dict):
-            lines.append("\t" * depth + "{0} = ".format(i))
-            lines = lines + dict2stringlist(data[i], depth=depth)
-        elif isinstance(data[i], list):
-            lines.append("\t" * depth + "{0} = {1}".format(i, list2string(data[i])))
-        elif isinstance(data[i], Waveform):
-            lines.append("\t" * depth + "{0} = ".format(i))
-            lines = lines + dict2stringlist(data[i].export_waveform(), depth=depth)
-        else:
-            lines.append("\t" * depth + "{0} = {1}".format(i, data[i]))
-
-
-    depth -= 1
-
-    if depth > 0:
-        lines.append("\t" * depth + "}")
-
-    return lines
-
-def list2string(data):
-
-    text = "{"
-
-    for i in data:
-        text += "{0} ".format(i)
-
-    text += "}"
-
-    return text
 
 if __name__ == "__main__":
     from Marconpa.examples.example import parse_density

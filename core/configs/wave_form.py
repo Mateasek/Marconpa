@@ -2,7 +2,7 @@ import warnings
 import pandas as pd
 import numpy as np
 from scipy.interpolate import CubicSpline
-
+from Marconpa.core.utils.conversions import dict2stringlist
 
 class Waveform:
     """
@@ -107,3 +107,16 @@ class Waveform:
         :return:
         """
         return self.waveform.to_dict(orient='index')
+
+    def export_as_listofstring(self, depth=0):
+        listofstrings = ["\t" * depth + "NumberOfIntervals = {0:d}".format(self.NofIntervals)]
+        listofstrings.append("\t" * depth + "Waveform =")
+        listofstrings.append("\t" * depth + "{")
+        listofstrings += dict2stringlist(self.export_waveform(), depth=depth+1)
+        listofstrings.append("\t" * depth + "}")
+        return listofstrings
+
+    def export_as_string(self, depth=0):
+        return "\n".join(self.export_as_listofstring(depth=depth))
+
+

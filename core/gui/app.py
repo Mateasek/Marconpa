@@ -7,16 +7,71 @@ import pandas as pd
 from dash.dependencies import Input, Output, State
 import base64
 
-
+from Marconpa.core.gui.waveform.layout import waveform_layout
+from Marconpa.core.gui.channel.layout import channel_layout
 from Marconpa.core.parser.lark import MarteConfigParser
+from Marconpa.core.configs.configfile import ConfigFile
+from Marconpa.examples.example import parse_density
 from Marconpa.core.configs.configfile import Density
+from Marconpa.core.configs.channel import Channel
+from Marconpa.core.gui.config.layout import config_layout
 
-app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
+class Marta:
+    CONFIG_NAMES = ["Density", "EFPS", "FABR", "FABV", "SFPS", "TFPS"]
 
+    def __init__(self):
 
-row = html.Div(
-    [
-        html.Div([
+        self.app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
+        self.app.config['suppress_callback_exceptions'] = True
+        self.config_files = {}
+
+        upload_layout = self.generate_uploat_layout()
+
+        tabs = html.Div([dcc.Tabs(id="config_tabs", value='density', children=[
+        ]),
+                         html.Div(id="tabs_content")
+                         ])
+
+        layout = html.Div([upload_layout, tabs])
+
+        self.app.layout = dbc.Container([layout])
+        self.add_callback(Output('tabs_content', 'children'),
+                          [Input('config_tabs', 'value')],
+                          [],
+                          self.get_tab)
+
+        self.add_callback(Output('config_tabs', 'children'),
+                  [Input('upload-data', 'contents')],
+                  [State('upload-data', 'filename'),
+                   State('upload-data', 'last_modified')], self.process_files)
+
+    def add_callback(self, outp, inp, state, action):
+        self.app.callback(outp, inp, state)(action)
+
+    def process_files(self, list_of_contents, list_of_names, list_of_dates):
+        self.config_files = {}
+        tabs = []
+        if list_of_contents is None:
+            return
+
+        parser = MarteConfigParser()
+
+        for files in zip(list_of_names, list_of_contents):
+            if files[0] in self.CONFIG_NAMES:
+                content_type, content_string = files[1].split(',')
+                decoded = base64.b64decode(content_string).decode()
+                parsed = parser.parse_config(decoded)
+                self.config_files[files[0]] = ConfigFile.from_parsed(parsed)
+                tabs.append(dcc.Tab(label=files[0], value=files[0]))
+
+        return tabs
+
+    def get_tab(self, configname):
+        if configname in self.config_files.keys():
+            return config_layout(configname, self.config_files[configname], self.app)
+
+    def generate_uploat_layout(self):
+        layout = html.Div([
             dcc.Upload(
                 id='upload-data',
                 children=html.Div([
@@ -34,59 +89,12 @@ row = html.Div(
                     'margin': '10px'
                 },
                 # Allow multiple files to be uploaded
-                multiple=False
+                multiple=True
             ),
             html.Div(id='output-data-upload'),
-        ]),
-        dbc.Row(dbc.Col(html.Div("Waveform editor"))),
-        dbc.Row(
-            [
-                dbc.Col(
-                    html.Div(
-                        [
-                            dash_table.DataTable(
-                                id="table-editing-simple",
-                                columns=[
-                                    {"name": i, "id": i} for i in ["index", "x0", "x1", "y0", "y1"]
-                                ],
-                                data=[
-                                ],
-                                editable=True,
-                            )
-                        ]
-                    ),
-                    style={"width": "150px"},
-                ),
-                dbc.Col(html.Div([dcc.Graph(id="table-editing-simple-output")])),
-            ]
-        ),
-    ]
-)
+        ])
 
-
-app.layout = dbc.Container([row])
-
-
-
-
-@app.callback(
-    Output("table-editing-simple-output", "figure"),
-    [Input("table-editing-simple", "data"), Input("table-editing-simple", "columns")],
-)
-def display_output(rows, columns):
-    df = pd.DataFrame(rows, columns=[c["name"] for c in columns])
-    return {"data": [{"x": [row["x0"], row["x1"]], "y": [row["y0"], row["y1"]], "type": "line"} for row in rows]}
-
-
-@app.callback(Output("table-editing-simple", "data"),
-              [Input('upload-data', 'contents')])
-
-def select_config_file(contents):
-    #get file content
-    content_type, content_string = contents.split(',')
-    decoded = base64.b64decode(content_string).decode()
-    data_toplot = parse_config(decoded)
-    return data_toplot
+        return layout
 
 def parse_config(file_coontents):
 
@@ -104,4 +112,5 @@ def parse_config(file_coontents):
 
 
 if __name__ == "__main__":
-    app.run_server(debug=True)
+    marta = Marta()
+    marta.app.run_server(debug=True)

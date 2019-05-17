@@ -126,6 +126,7 @@ config_types = {"Density": Density,
          "SFPS": SFPS,
          "TFPS": TFPS,
          "WPPC": WPPC}
+
 def get_config_object(configtype, folderpath):
 
     parser = MarteConfigParser()

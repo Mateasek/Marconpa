@@ -16,7 +16,7 @@ from Marconpa.core.configs.configfile import Density
 from Marconpa.core.configs.channel import Channel
 
 
-def config_layout(config_id, config, app):
+def config_layout_channels(config_id, config, app):
     channels = get_channels(config)
     row = html.Div(
         [channel_layout(config_id + "_" + i[0], i[0], i, app) for i in channels.items()]
@@ -25,6 +25,9 @@ def config_layout(config_id, config, app):
     return row
 
 
+def config_layout_waveform(config_id, config, app):
+    contents = html.Div(waveform_layout(config_id + "_waveform", "waveform", config.waveform, app))
+    return html.Div([contents])
 
 def get_channels(conf):
 

@@ -1,0 +1,197 @@
+ProgrammedChannel =		//PeckerProbeController for PP#01
+{
+	ExternalDrive = No
+	Enabled =		//Enabling ProgrammedWaveform (Value 1.0) x - time [microseconds], y - value  //Interpolation - Linear or Constant
+	{
+		NumberOfIntervals = 1
+		Waveform =
+		{
+			0 =
+			{
+				x0 = 0.0
+				x1 = 1600000.0
+				y0 = 1.0
+				y1 = 1.0
+				Interpolation = Constant
+			}
+		}
+	}
+	ProgrammedWaveform =		//ProgrammedWaveform (Values [V]) x - time [microseconds], y - value [V]
+	{
+		NumberOfIntervals = 9
+		Waveform =
+		{
+			0 =
+			{
+				x0 = 0930000.0		//us
+				x1 = 0940000.0
+				y0 = 0.0
+				y1 = 2.0                 // positive request -> negative voltage -> moving PP towards parking 
+				Interpolation = Linear   // negative request -> positive voltage -> moving PP inside plasma
+			}
+			1 = 
+			{
+				x0 = 0940000.0
+				x1 = 1010000.0
+				y0 = 2.0   		//AMPS
+				y1 = 2.0   
+				Interpolation = Linear
+			}
+			2 = 
+			{
+				x0 = 1010000.0
+				x1 = 1020000.0
+				y0 = 2.0  		//AMPS
+				y1 = 0.0      
+				Interpolation = Linear
+			}
+                        3 = 
+			{
+				x0 = 1020000.0
+				x1 = 1080000.0
+				y0 = 0.0  		//AMPS
+				y1 = 0.0      
+				Interpolation = Linear
+			}
+                        4 = 
+			{
+				x0 = 1080000.0
+				x1 = 1090000.0
+				y0 = 0.0  		//AMPS
+				y1 = -9.0      
+				Interpolation = Linear
+			}
+                        5 = 
+			{
+				x0 = 1090000.0
+				x1 = 1120000.0
+				y0 = -9.0  		//AMPS
+				y1 = -9.0      
+				Interpolation = Linear
+			}
+                        6 = 
+			{
+				x0 = 1120000.0
+				x1 = 1140000.0
+				y0 = -9.0  		//AMPS
+				y1 = 9.0      
+				Interpolation = Linear
+			}
+                        7 = 
+			{
+				x0 = 1140000.0
+				x1 = 1170000.0
+				y0 = 9.0  		//AMPS
+				y1 = 9.0      
+				Interpolation = Linear
+			}
+                        8 = 
+			{
+				x0 = 1170000.0
+				x1 = 1180000.0
+				y0 = 9.0  		//AMPS
+				y1 = 0.0      
+				Interpolation = Linear
+			}
+		}
+	}
+}
+FeedbackChannel =		//Enabling FeedbackChannel (Value 1.0 - Enable; 0.0 - Disable) x - time [microseconds], y - value  //Interpolation - Linear or Constant
+{
+	ExternalDrive = No
+	Enabled =
+	{
+		NumberOfIntervals = 1
+		Waveform =
+		{
+			0 =
+			{
+				x0 = 0.0
+				x1 = 1500000.0
+				y0 = 0.0
+				y1 = 0.0
+				Interpolation = Constant
+			}
+		}
+	}
+	SpWaveform =		//SetPoint - value where you want to get with your probe position
+	{
+		NumberOfIntervals = 1
+		Waveform =
+		{
+			0 =
+			{
+				x0 = 0.0
+				x1 = 970000.0
+				y0 = 0.0
+				y1 = 0.0
+				Interpolation = Constant
+			}
+			
+		}
+	}
+	KpWaveform =		//Feedback constants
+	{
+		NumberOfIntervals = 1
+		Waveform =
+		{
+			0 =
+			{
+				x0 = 970000.0
+				x1 = 1500000.0
+				y0 = 0.0
+				y1 = 0.0	
+				Interpolation = Linear
+			}
+		}
+	}
+	KiWaveform =
+	{
+		NumberOfIntervals = 1
+		Waveform =
+		{
+			0 =
+			{
+				x0 = 970000.0
+				x1 = 1080000.0
+				y0 = 0.0006	
+				y1 = 0.0006	
+				Interpolation = Constant
+			}
+		}
+	}
+	KdWaveform =
+	{
+		NumberOfIntervals = 1
+		Waveform =
+		{
+			0 =
+			{
+				x0 = 0.0
+				x1 = 1500000.0
+				y0 = 0.0
+				y1 = 0.0
+				Interpolation = Constant
+			}
+		}
+	}
+}
+FeedforwardChannel =
+{
+	ExternalDrive = No
+	Enabled =
+	{
+		NumberOfIntervals = 1
+		Waveform =
+		{
+			0 =
+			{
+				x0 = 0.0
+				x1 = 1500000.0
+				y0 = 0.0
+				y1 = 0.0
+				Interpolation = Constant
+			}
+		}
+	}
+}

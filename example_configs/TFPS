@@ -1,0 +1,36 @@
+NumberOfIntervals = 4
+Waveform =
+{
+	0 =
+	{
+		x0 = 0.000000
+		x1 = 10000.000000
+		y0 = 0.000000
+		y1 = 0.000000
+		Interpolation = Constant
+	}
+	1 =
+	{
+		x0 = 10000.0
+		x1 = 400000.0
+		y0 = 20000.0
+		y1 = 50000.0
+		Interpolation = Linear
+	}
+	2 =
+	{
+		x0 = 400000.0
+		x1 = 1600000.0
+		y0 = 50000.0
+		y1 = 50000.0
+		Interpolation = Constant
+	}
+	3 =
+	{
+		x0 = 1600000.0
+		x1 = 1900000.0
+		y0 = 0.0
+		y1 = 0.0
+		Interpolation = Constant
+	}
+}

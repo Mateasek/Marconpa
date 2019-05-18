@@ -1,0 +1,320 @@
+			ProgrammedChannel =		//Gus-puff Configuration
+			{
+				ExternalDrive = No
+				Enabled =
+				{
+					NumberOfIntervals = 1
+					Waveform =
+					{
+						0 =
+						{
+							x0 = 0.0
+							x1 = 1500000.0
+							y0 = 1.0
+							y1 = 1.0
+							Interpolation = Constant
+						}
+					}
+				}
+				ProgrammedWaveform =
+				{
+					NumberOfIntervals = 3
+					Waveform =
+					{
+						0 =
+						{
+							x0 = 920000.0		//us
+							x1 = 932000.0
+							y0 = 100.0
+							y1 = 100.0
+							Interpolation = Linear
+						}
+						1 = 
+						{
+							x0 = 932000.0
+							x1 = 960000.0
+							y0 = 50.0   		//AMPS
+							y1 = 50.0   
+							Interpolation = Linear
+						}
+						2 = 
+						{
+							x0 = 960000.0
+							x1 = 970000.0
+							y0 = 60.0   		//AMPS
+							y1 = 60.0   
+							Interpolation = Linear
+						}
+					}
+				}
+			}
+			FeedbackChannel =
+			{
+				ExternalDrive = No
+				
+				//Discrete feedback setting
+                                ActivateDiscreteFeedback = Yes  //Yes //No,0,False, false is admissible
+                                DiscreteFeedbackValue = 90
+                                DiscreteFeedbackRelaxedValue = 60
+                                DiscreteFeedbackSetPoint = 4.0
+                                DiscreteFeedbackRelaxationRange = 0.3
+				
+				//Error for integral part of PID controller limitation
+                                LimitErrI = 0  //switched off by setting it to 0
+				
+				//Set Integral Part of PID controller
+				SetIntegralPartTime = {970000 100000001} //us
+				SetIntegralPartValue = {50 0}
+				
+				//Catch Value 
+				CatchValueTime = 200000001 //us for disable use realy lont time greather 200000000
+				CatchValueAveragingWindow = 5000 //us
+
+				Enabled =
+				{
+					NumberOfIntervals = 4
+					Waveform =
+					{
+						0 =
+
+						{
+							x0 = 0.0
+							x1 = 970000.0
+							y0 = 0.0
+							y1 = 0.0
+							Interpolation = Constant
+						}
+						1	=
+						{
+							x0 = 970000.0
+							x1 = 1080000.0
+							y0 = 1.0
+							y1 = 1.0
+							Interpolation = Constant
+						}
+						2 =
+						{
+							x0 = 1080000.0
+							x1 = 1110000.0
+							y0 = 1.0
+							y1 = 1.0
+							Interpolation = Constant
+						}
+						3 =
+						{
+							x0 = 1110000.0
+							x1 = 1600000.0
+							y0 = 1.0
+							y1 = 1.0
+							Interpolation = Constant
+						}
+					}
+				}
+				SpWaveform =
+				{
+					NumberOfIntervals = 5
+					Waveform =
+					{
+						0 =
+						{
+							x0 = 0.0
+							x1 = 970000.0
+							y0 = 0.0
+							y1 = 0.0
+							Interpolation = Constant
+						}
+						1 =
+						{
+							x0 = 970000.0
+							x1 = 1060000.0
+							y0 = 4.0
+							y1 = 4.0
+							Interpolation = Linear
+						}
+						2 =
+						{
+							x0 = 1060000.0
+							x1 = 1100000.0
+							y0 = 4.0
+							y1 = 4.0
+							Interpolation = Linear
+						}
+						3 =
+						{
+							x0 = 1100000.0
+							x1 = 1250000.0
+							y0 = 4.0
+							y1 = 4.0
+							Interpolation = Linear
+						}
+						4 =
+						{
+							x0 = 1250000.0
+							x1 = 1350000.0
+							y0 = 4.0
+							y1 = 0.0
+							Interpolation = Linear
+						}
+						
+					}
+				}
+				KpWaveform =
+				{
+					NumberOfIntervals = 1
+					Waveform =
+					{
+						0 =
+						{
+							x0 = 970000.0
+							x1 = 1500000.0
+							y0 = 30.0
+							y1 = 30.0	
+							Interpolation = Linear
+						}
+					}
+				}
+				KiWaveform =
+				{
+					NumberOfIntervals = 3
+					Waveform =
+					{
+						0 =
+						{
+							x0 = 970000.0
+							x1 = 1080000.0
+							y0 = 0.0006	
+							y1 = 0.0006	
+							Interpolation = Constant
+						}
+						1 =
+						{
+							x0 = 1080000.0
+							x1 = 1110000.0
+							y0 = 0.0006
+							y1 = 0.0006
+							Interpolation = Constant
+						}
+						2 =
+						{
+							x0 = 1110000.0
+							x1 = 1500000.0
+							y0 = 0.0006	
+							y1 = 0.0006	
+							Interpolation = Constant
+						}
+					}
+				}
+				KdWaveform =
+				{
+					NumberOfIntervals = 1
+					Waveform =
+					{
+						0 =
+						{
+							x0 = 0.0
+							x1 = 1500000.0
+							y0 = 0.0
+							y1 = 0.0
+							Interpolation = Constant
+						}
+					}
+				}
+				//Feedback output limitation
+                                UpperLimit =
+                                {
+                                        NumberOfIntervals = 4
+                                        Waveform =
+                                        {
+                                                0 =
+                                                {
+                                                        x0 = 0.0
+                                                        x1 = 970000.0
+                                                        y0 = 100.0
+                                                        y1 = 100.0
+                                                        Interpolation = Constant
+                                                }
+                                                1 =
+                                                {
+                                                        x0 = 970000.0
+                                                        x1 = 1100000.0
+                                                        y0 = 100.0
+                                                        y1 = 100.0
+                                                        Interpolation = Constant
+                                                }
+                                                2 =
+                                                {
+                                                        x0 = 1100000.0
+                                                        x1 = 1350000.0
+                                                        y0 = 100.0
+                                                        y1 = 100.0
+                                                        Interpolation = Linear
+                                                }
+                                                3 =
+                                                {
+                                                        x0 = 1350000.0
+                                                        x1 = 1600000.0
+                                                        y0 = 0.0
+                                                        y1 = 0.0
+                                                        Interpolation = Constant
+                                                }
+                                        }
+                                }
+				LowerLimit =
+				{
+					NumberOfIntervals = 4
+					Waveform =
+					{
+						0 =
+						{
+							x0 = 0.0
+							x1 = 970000.0
+							y0 = 25.0
+							y1 = 25.0
+							Interpolation = Constant
+						}
+						1 =
+						{
+							x0 = 970000.0
+							x1 = 1150000.0
+							y0 = 25.0
+							y1 = 25.0
+							Interpolation = Constant
+						}
+						2 =
+						{
+							x0 = 1150000.0
+							x1 = 1240000.0
+							y0 = 25.0
+							y1 = 25.0
+							Interpolation = Linear
+						}
+						3 =
+						{
+							x0 = 1240000.0
+							x1 = 1600000.0
+							y0 = 0.0
+							y1 = 0.0
+							Interpolation = Constant
+						}
+					}
+				}
+			}
+			FeedforwardChannel =
+			{
+				ExternalDrive = No
+				Enabled =
+				{
+					NumberOfIntervals = 1
+					Waveform =
+					{
+						0 =
+						{
+							x0 = 0.0
+							x1 = 1500000.0
+							y0 = 0.0
+							y1 = 0.0
+							Interpolation = Constant
+						}
+					}
+				}
+			}

@@ -1,0 +1,278 @@
+			ProgrammedChannel =			//FABV Configuration
+			{
+				ExternalDrive = No
+				Enabled =
+				{
+					NumberOfIntervals = 3
+					Waveform =
+					{
+						0 =
+						{
+							x0 = 0.0
+							x1 = 940000.0
+							y0 = 0.0
+							y1 = 0.0
+							Interpolation = Constant
+						}
+						1 =
+						{
+							x0 = 940000.0
+							x1 = 1000000.0
+							y0 = 1.0
+							y1 = 1.0
+							Interpolation = Constant
+						}
+						2 = 
+						{
+							x0 = 1000000.0
+							x1 = 1500000.0
+							y0 = 0.0
+							y1 = 0.0
+							Interpolation = Constant
+						}
+					}
+				}
+				ProgrammedWaveform =
+				{
+					NumberOfIntervals = 3
+					Waveform =
+					{
+						0 =
+						{
+							x0 = 0.0		//us
+							x1 = 940000.0
+							y0 = 0.0
+							y1 = 0.0
+							Interpolation = Constant
+						}
+						1 =
+						{
+							x0 = 940000.0		//us
+							x1 = 960000.0 //963000.0
+							y0 = 600.0 //1000.0 was used before shot 4086, then changed to 600.0 because there were problems with breakdown
+							y1 = 600.0
+							Interpolation = Constant //Linear
+						}						
+						2 =
+						{
+							x0 = 960000.0 //963000.0
+							x1 = 1000000.0
+							y0 = 600.0
+							y1 = 0.0
+							Interpolation = Linear
+						}
+
+					}
+				}
+			}
+			FeedbackChannel =
+			{
+				ExternalDrive = No
+				Enabled =
+				{
+					NumberOfIntervals = 3
+					Waveform =
+					{
+						0 =
+						{
+							x0 = 0.0
+							x1 = 957000.0
+							y0 = 0.0
+							y1 = 0.0
+							Interpolation = Constant
+						}
+						1	=
+						{
+							x0 = 957000.0
+							x1 = 1500000.0
+							y0 = 1.0
+							y1 = 1.0
+							Interpolation = Constant
+						}
+						2 =
+						{
+							x0 = 1500000.0
+							x1 = 1600000.0
+							y0 = 0.0
+							y1 = 0.0
+							Interpolation = Constant
+						}
+					}
+				}
+				SpWaveform =		//set point for radial stabilization
+				{
+					NumberOfIntervals = 9
+					Waveform =
+					{
+						0 =
+						{
+							x0 = 957000.0
+							x1 = 962000.0
+							y0 = 0.540	//0.67
+							y1 = 0.540
+							Interpolation = Constant
+						}
+						1=
+						{
+							x0 = 962000.0
+							x1 = 1000000.0
+							y0 = 0.540
+							y1 = 0.540
+							Interpolation = Linear //
+						}
+						2 =
+						{
+							x0 = 1000000.0
+							x1 = 1060000.0
+							y0 = 0.540
+							y1 = 0.56	 //0.547 //0.535 in less shaped plasma
+							Interpolation = Linear
+						}
+						3 =
+						{
+							x0 = 1060000.0
+							x1 = 1061000.0
+							y0 = 0.56	//0.547
+							y1 = 0.56	//0.555
+							Interpolation = Linear
+							}
+						4 =
+						{
+							x0 = 1061000.0
+							x1 = 1090000.0
+							y0 = 0.56	//0.555
+							y1 = 0.56
+							Interpolation = Linear //Constant
+						}
+						5 =
+						{
+							x0 = 1090000.0
+							x1 = 1110000.0
+							y0 = 0.56
+							y1 = 0.56	//0.542
+							Interpolation = Linear
+						}
+						6 =
+						{
+							x0 = 1110000.0
+							x1 = 1180000.0
+							y0 = 0.56
+							y1 = 0.56
+							Interpolation = Linear
+						}
+						7 =
+						{
+							x0 = 1180000.0
+							x1 = 1250000.0
+							y0 = 0.56	//0.542
+							y1 = 0.56	//0.542
+							Interpolation = Linear
+						}
+						8 =
+						{
+							x0 = 1250000.0
+							x1 = 1300000.0
+							y0 = 0.56	//0.542
+							y1 = 0.540	//0.542
+							Interpolation = Linear
+						}
+					}
+				}
+				KpWaveform =
+				{
+					NumberOfIntervals = 4
+					Waveform =
+					{
+
+						0 =
+						{
+							x0 = 0.0
+							x1 = 959000.0
+							y0 = 0.0
+							y1 = 0.0
+							Interpolation = Constant
+						}
+						1 =
+						{
+							x0 = 959000.0
+							x1 = 1040000.0
+							y0 = -300000.0
+							y1 = -300000.0
+							Interpolation = Constant
+						}
+						2 =
+						{
+							x0 = 1040000.0
+							x1 = 1080000.0
+							y0 = -300000.0
+							y1 = -300000.0
+							Interpolation = Constant
+						}
+						3 = 
+						{
+							x0 = 1080000.0
+							x1 = 1500000.0
+							y0 = -300000.0
+							y1 = -300000.0
+							Interpolation = Constant
+						}
+					}
+				}
+				KiWaveform =
+				{
+					NumberOfIntervals = 2
+					Waveform =
+					{
+						0 =
+						{
+							x0 = 970000.0
+							x1 = 980000.0
+							y0 = 0.0
+							y1 = -60.0
+							Interpolation = Linear
+						}
+						1 =
+						{
+							x0 = 980000.0
+							x1 = 1500000.0
+							y0 = -60.0
+							y1 = -60.0
+							Interpolation = Constant
+						}
+					}
+				}
+				KdWaveform =
+				{
+					NumberOfIntervals = 1
+					Waveform =
+					{
+						0 =
+						{
+							x0 = 0.0
+							x1 = 1200000.0
+							y0 = 0.0
+							y1 = 0.0
+							Interpolation = Constant
+						}
+					}
+				}
+			}
+			FeedforwardChannel =
+			{
+				ExternalDrive = No
+				Enabled =
+				{
+					NumberOfIntervals = 1
+					Waveform =
+					{
+						0 =
+						{
+							x0 = 0.0
+							x1 = 1200000.0
+							y0 = 0.0
+							y1 = 0.0
+							Interpolation = Constant
+						}
+					}
+				}
+			}

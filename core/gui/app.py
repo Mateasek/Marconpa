@@ -22,38 +22,23 @@ class Marta:
     CONFIG_NAMES = ["Density", "EFPS", "FABR", "FABV", "SFPS", "TFPS", "Density2"]
 
     def __init__(self):
-        self.callback_list = []
-
         self.app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
-        #self.app.config['suppress_callback_exceptions'] = True
-        self.config_files = {}
+        self.app.config['suppress_callback_exceptions'] = True
 
         #generates clicking stuff to initiate file selection and upload
         upload_layout = self.generate_upload_layout()
 
+        #compose general layout
+        layout = html.Div([upload_layout, html.Div(id="div_tabs")])
 
-        layout = html.Div([upload_layout, html.Div(id="div_tabs"), html.Div(id="invisible")])
-
+        #set app layout
         self.app.layout = dbc.Container([layout])
 
+        #calback initializing tabs and their content after upload
         self.app.callback(Output('div_tabs', 'children'),
                   [Input('upload-data', 'contents')],
                   [State('upload-data', 'filename'),
                    State('upload-data', 'last_modified')])(self.process_files)
-
-        self.app.callback(Output("invisible", "children"), [Input("div_tabs", "children")])(self.tabchanged)
-
-    def tabchanged(self, inp):
-        #print(list(self.layout.keys()) + (
-        #                    [] if not hasattr(layout, 'id') else
-        #                    [layout.id]
-        #                ))
-        for callback in self.callback_list:
-            if not create_callback_id(callback[0]["output"]) in list(self.app.callback_map.keys()):
-                self.app.callback(**callback[0])(callback[1])
-        self.callback_list = []
-        return []
-
 
     def process_files(self, list_of_contents, list_of_names, list_of_dates):
         """
@@ -67,29 +52,26 @@ class Marta:
 
 
         self.config_files = {}
-        tabs = []
+        tab = []
         if list_of_contents is None:
             return
 
         parser = MarteConfigParser()
 
-        for files in zip(list_of_names, list_of_contents):
-            if files[0] in self.CONFIG_NAMES:
-                content_type, content_string = files[1].split(',')
+        for key, item in zip(list_of_names, list_of_contents):
+            if key in self.CONFIG_NAMES:
+                content_type, content_string = item.split(',')
                 decoded = base64.b64decode(content_string).decode()
                 parsed = parser.parse_config(decoded)
-                self.config_files[files[0]] = config_types[files[0]].from_parsed(parsed)
-                tabs.append(dcc.Tab(label=files[0], id=files[0], children=[self.get_tab(files[0])]))
+                config_instance = config_types[key].from_parsed(parsed)
 
-        tabs_config = dcc.Tabs(id="config_tabs", children=tabs)
-        return tabs_config
+                if isinstance(config_instance, StandartConfig) or isinstance(config_instance, EFPS):
+                    tab.append(dcc.Tab(label=key, id=key, children=[config_layout_channels(key, config_instance, self)]))
+                if isinstance(config_instance, WaveformConfig):
+                    tab.append(dcc.Tab(label=key, id=key, children=[config_layout_waveform(key, config_instance, self)]))
 
-    def get_tab(self, configname):
-        if configname in self.config_files.keys():
-            if isinstance(self.config_files[configname], StandartConfig) or isinstance(self.config_files[configname], EFPS):
-                return config_layout_channels(configname, self.config_files[configname], self)
-            if isinstance(self.config_files[configname], WaveformConfig):
-                return config_layout_waveform(configname, self.config_files[configname], self)
+        tabs = dcc.Tabs(id="config_tabs", children=tab)
+        return tabs
 
     def generate_upload_layout(self):
         """

@@ -13,14 +13,19 @@ from Marconpa.core.gui.waveform.layout import waveform_layout
 from Marconpa.core.configs.wave_form import Waveform
 
 def get_waveforms(channel):
+    """
+    Extract wavefroms into an ordered dict
+    :param channel: Channel from configuration file class
+    :return:
+    """
     waveforms = OrderedDict()
-    for attrib in channel[1].__attrs_attrs__:
-        attrib_value = getattr(channel[1], attrib.name)
+    for attrib in channel.__attrs_attrs__:
+        attrib_value = getattr(channel, attrib.name)
         if isinstance(attrib_value,Waveform) and attrib.name is "Enabled":
             waveforms["Enabled"] = attrib_value
 
-    for attrib in channel[1].__attrs_attrs__:
-        attrib_value = getattr(channel[1], attrib.name)
+    for attrib in channel.__attrs_attrs__:
+        attrib_value = getattr(channel, attrib.name)
         if isinstance(attrib_value, dict):
             for j in attrib_value.items():
                 if isinstance(j[1], Waveform):
@@ -29,7 +34,14 @@ def get_waveforms(channel):
     return waveforms
 
 def channel_layout(channel_id, channel_name, channel, app):
-
+    """
+    Generates content of the channel
+    :param channel_id: Id for the channel
+    :param channel_name: Chanel name
+    :param channel: Instance of the channel class
+    :param app: marta instance
+    :return:
+    """
     waveforms = get_waveforms(channel)
 
     if bool(waveforms):
@@ -39,3 +51,27 @@ def channel_layout(channel_id, channel_name, channel, app):
         return html.Details([html.Summary(channel_name), contents])
     else:
         return html.Div()
+
+if __name__ == "__main__":
+
+    from Marconpa.core.configs.configfile import get_config_object
+
+    class Marta():
+
+        def __init__(self):
+
+            self.app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
+
+    configtype = "Density"
+    configfolder = "/home/maajk/configs/original/"
+
+    density = get_config_object(configtype, configfolder)
+
+    marta = Marta()
+    marta.app.config['suppress_callback_exceptions'] = True
+
+    layout = channel_layout("test_channel", "SP", density.FeedbackChannel, marta)
+
+
+    marta.app.layout =  layout
+    marta.app.run_server(debug=True)

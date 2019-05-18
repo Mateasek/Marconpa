@@ -11,6 +11,7 @@ from collections import OrderedDict
 
 from Marconpa.core.gui.waveform.layout import waveform_layout
 from Marconpa.core.configs.wave_form import Waveform
+from Marconpa.core.gui.channel.components import attributes_table
 
 def get_waveforms(channel):
     """
@@ -18,20 +19,25 @@ def get_waveforms(channel):
     :param channel: Channel from configuration file class
     :return:
     """
-    waveforms = OrderedDict()
+
+    channel_content = {}
+
+    channel_content["waveforms"] = OrderedDict()
     for attrib in channel.__attrs_attrs__:
         attrib_value = getattr(channel, attrib.name)
         if isinstance(attrib_value,Waveform) and attrib.name is "Enabled":
-            waveforms["Enabled"] = attrib_value
+            channel_content["waveforms"]["Enabled"] = attrib_value
 
     for attrib in channel.__attrs_attrs__:
         attrib_value = getattr(channel, attrib.name)
+        if attrib.name == "attributes":
+            channel_content["attributes"] = getattr(channel, attrib.name)
         if isinstance(attrib_value, dict):
-            for j in attrib_value.items():
-                if isinstance(j[1], Waveform):
-                    waveforms[j[0]] = j[1]
+            for key, item in attrib_value.items():
+                if isinstance(item, Waveform):
+                    channel_content["waveforms"][key] = item
 
-    return waveforms
+    return channel_content
 
 def channel_layout(channel_id, channel_name, channel, app):
     """
@@ -42,10 +48,13 @@ def channel_layout(channel_id, channel_name, channel, app):
     :param app: marta instance
     :return:
     """
-    waveforms = get_waveforms(channel)
+    channel_contents = get_waveforms(channel)
 
-    if bool(waveforms):
-        list_content = [html.Li(waveform_layout(channel_id + "_" + i[0], i[0], i[1], app)) for i in waveforms.items()]
+    if "attributes" in channel_contents.keys():
+        list_content = [html.Details([html.Summary("attributes"), attributes_table(channel_id+"_attributes", channel_contents["attributes"])])]
+
+    if bool(channel_contents["waveforms"]):
+        list_content += [html.Li(waveform_layout(channel_id + "_" + i[0], i[0], i[1], app)) for i in channel_contents["waveforms"].items()]
         contents = html.Div(html.Ol(list_content, style={"listStyle": "none"}))
         #contents = html.Div([waveform_layout(channel_id + "_" + i[0], i[0], i[1], app) for i in waveforms.items()])
         return html.Details([html.Summary(channel_name), contents])

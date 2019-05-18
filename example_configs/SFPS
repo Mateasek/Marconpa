@@ -1,0 +1,223 @@
+
+
+			ProgrammedChannel =			//SFPS Configuration
+			{
+				ExternalDrive = No
+				Enabled =
+				{
+					NumberOfIntervals = 1
+					Waveform =
+					{
+						0 =
+						{
+							x0 = 0.0
+							x1 = 1600000.0
+							y0 = 1.0
+							y1 = 1.0
+							Interpolation = Constant
+						}
+					}
+				}
+				ProgrammedWaveform =
+				{
+					NumberOfIntervals = 5 
+					Waveform =
+					{
+						0 =
+						{
+							x0 = 970000.0		//us
+							x1 = 1005000.0
+							y0 = 0.0
+							y1 = 3000.0
+							Interpolation = Linear
+						}
+						1 = 
+						{
+							x0 = 1005000.0
+							x1 = 1020000.0
+							y0 = 3000.0		//AMPS
+							y1 = 3000.0
+							Interpolation = Linear
+						}
+                                                2 = 
+                                                {
+                                                        x0 = 1020000.0
+                                                        x1 = 1520000.0
+                                                        y0 = 0.0             //AMPS
+                                                        y1 = 0.0
+                                                        Interpolation = Linear
+                                                }
+                                                3 = 
+                                                {
+                                                        x0 = 1520000.0
+                                                        x1 = 1555000.0
+                                                        y0 = 1000.0             //AMPS
+                                                        y1 = 1000.0
+                                                        Interpolation = Linear
+                                                }
+                                                4 = 
+                                                {
+                                                        x0 = 1555000.0
+                                                        x1 = 1600000.0
+                                                        y0 = 0.0             //AMPS
+                                                        y1 = 0.0
+                                                        Interpolation = Linear
+                                                }
+					}
+				}
+			}
+			FeedbackChannel =
+			{
+    			SmoothTimeInMicroSec = 13000
+				ExternalDrive = No
+				Enabled =
+				{
+					NumberOfIntervals = 3
+					Waveform =
+					{
+						0 =
+						{
+							x0 = 0.0
+							x1 = 1020000.0
+							y0 = 0.0
+							y1 = 0.0
+							Interpolation = Constant
+						}
+						1	=
+						{
+							x0 = 1020000.0
+							x1 = 1500000.0
+							y0 = 1.0
+							y1 = 1.0
+							Interpolation = Constant
+						}
+						2 =
+						{
+							x0 = 1500000.0
+							x1 = 1600000.0
+							y0 = 0.0
+							y1 = 0.0
+							Interpolation = Constant
+						} 
+					}
+				}
+				SpWaveform =
+				{
+					NumberOfIntervals = 4
+					Waveform =
+					{
+						0 =
+						{
+							x0 = 0.0
+							x1 = 1000000.0
+							y0 = 0.0
+							y1 = 0.0
+							Interpolation = Constant
+						}
+						1 =
+						{
+							x0 = 1000000.0
+							x1 = 1030000.0
+							y0 = 0.0
+							y1 = 0.0
+							Interpolation = Linear
+						}
+						2 =
+						{
+							x0 = 1030000.0
+							x1 = 1200000.0
+							y0 = 0.0
+							y1 = 0.0
+							Interpolation = Constant
+						}
+						3 =
+						{
+							x0 = 1200000.0
+							x1 = 1500000.0
+							y0 = 0.0
+							y1 = 0.0
+							Interpolation = Linear
+						}
+					}
+				}
+				KpWaveform =
+				{
+					NumberOfIntervals = 3
+					Waveform =
+					{
+						0 =
+						{
+							x0 = 1020000.0
+							x1 = 1060000.0
+							y0 = 0.019 //0.031
+							y1 = 0.028 //0.031 was for large plasma, 0.034 for small plasma, after I_plasma recalibration 21-43 kA/V it should be wtf?
+							Interpolation = Linear
+						}
+						1 =
+						{
+							x0 = 1060000.0
+							x1 = 1220000.0
+							y0 = 0.028
+							y1 = 0.028	
+							Interpolation = Linear
+						}
+						2 = 
+						{
+							x0 = 1220000.0
+							x1 = 1300000.0
+							y0 = 0.028
+							y1 = 0.0
+							Interpolation = Linear
+						}
+					}
+				}
+				KiWaveform =
+				{
+					NumberOfIntervals = 1
+					Waveform =
+					{
+						0 =
+						{
+							x0 = 1000000.0
+							x1 = 1500000.0
+							y0 = 0.0
+							y1 = 0.0
+							Interpolation = Constant
+						}
+					}
+				}
+				KdWaveform =
+				{
+					NumberOfIntervals = 1
+					Waveform =
+					{
+						0 =
+						{
+							x0 = 0.0
+							x1 = 1200000.0
+							y0 = 0.0
+							y1 = 0.0
+							Interpolation = Constant
+						}
+					}
+				}
+			}
+			FeedforwardChannel =
+			{
+				ExternalDrive = No
+				Enabled =
+				{
+					NumberOfIntervals = 1
+					Waveform =
+					{
+						0 =
+						{
+							x0 = 0.0
+							x1 = 1200000.0
+							y0 = 0.0
+							y1 = 0.0
+							Interpolation = Constant
+						}
+					}
+				}
+			}

@@ -1,0 +1,403 @@
+			EFPSProgrammedChannel =			//EFPS Configuration
+			{
+				Enabled =
+				{
+					NumberOfIntervals = 5
+					Waveform =
+					{
+						0 =
+						{
+							x0 = 0.0
+							x1 = 950000.0
+							y0 = 0.0
+							y1 = 0.0
+							Interpolation = Constant
+						}
+						1 =
+						{
+							x0 = 950000.0
+							x1 = 963000.0
+							y0 = 1.0
+							y1 = 1.0
+							Interpolation = Constant
+						}
+						2 = 
+						{
+							x0 = 963000.0
+							x1 = 1450000.0
+							y0 = 0.0
+							y1 = 0.0
+							Interpolation = Constant
+						}
+                                                3 = 
+                                                {
+                                                        x0 = 1450000.0
+                                                        x1 = 1520000.0
+                                                        y0 = 1.0
+                                                        y1 = 1.0
+                                                        Interpolation = Constant
+                                                }
+                                                4 = 
+                                                {
+                                                        x0 = 1520000.0
+                                                        x1 = 1600000.0
+                                                        y0 = 0.0
+                                                        y1 = 0.0
+                                                        Interpolation = Constant
+                                                }
+					}
+				}
+				ProgrammedWaveform =
+				{
+					NumberOfIntervals = 5
+					Waveform =
+					{
+						0 =
+						{
+							x0 = 0.0		//us
+							x1 = 958000.0
+							y0 = 0.0
+							y1 = 0.0
+							Interpolation = Constant
+						}
+						1 =
+						{
+							x0 = 958000.0		//us
+							x1 = 963000.0
+							y0 = 2000.0
+							y1 = 2000.0
+							Interpolation = Linear
+						}						
+						2 =
+						{
+							x0 = 963000.0
+							x1 = 1470000.0
+							y0 = 0.0
+							y1 = 0.0
+							Interpolation = Constant
+						}
+                                                3 =
+                                                {
+                                                        x0 = 1470000.0
+                                                        x1 = 1515000.0
+                                                        y0 = 1000.0
+                                                        y1 = 1000.0
+                                                        Interpolation = Constant
+                                                }
+                                                4 =
+                                                {
+                                                        x0 = 1515000.0
+                                                        x1 = 1600000.0
+                                                        y0 = 0.0
+                                                        y1 = 0.0
+                                                        Interpolation = Constant
+                                                }
+
+					}
+				}
+			}
+			EFPSCurrentFeedbackChannel =
+			{
+				Enabled =
+				{
+					NumberOfIntervals = 3
+					Waveform =
+					{
+						0 =
+						{
+							x0 = 0.0
+							x1 = 963000.0
+							y0 = 0.0
+							y1 = 0.0
+							Interpolation = Constant
+						}
+						1	=
+						{
+							x0 = 963000.0
+							x1 = 1500000.0
+							y0 = 1.0
+							y1 = 1.0
+							Interpolation = Constant
+						}
+						2 =
+						{
+							x0 = 1500000.0
+							x1 = 1600000.0
+							y0 = 0.0
+							y1 = 0.0
+							Interpolation = Constant
+						}
+					}
+				}
+				KpWaveform =
+				{
+					NumberOfIntervals = 3
+					Waveform =
+					{
+
+						0 =
+						{
+							x0 = 0.0
+							x1 = 963000.0
+							y0 = 0.0
+							y1 = 0.0
+							Interpolation = Constant
+						}
+						1 =
+						{
+							x0 = 963000.0
+							x1 = 1500000.0
+							y0 = 0.046
+							y1 = 0.046
+							Interpolation = Constant
+						}
+						2 = 
+						{
+							x0 = 1500000.0
+							x1 = 1600000.0
+							y0 = 0.0
+							y1 = 0.0
+							Interpolation = Constant
+						}
+					}
+				}
+				KiWaveform =
+				{
+					NumberOfIntervals = 1
+					Waveform =
+					{
+						0 =
+						{
+							x0 = 0.0
+							x1 = 1200000.0
+							y0 = 0.0
+							y1 = 0.0
+							Interpolation = Constant
+						}
+					}
+				}
+				KdWaveform =
+				{
+					NumberOfIntervals = 1
+					Waveform =
+					{
+						0 =
+						{
+							x0 = 0.0
+							x1 = 1300000.0
+							y0 = 0.0
+							y1 = 0.0
+							Interpolation = Constant
+						}
+					}
+				}
+			}
+			PositionFeedbackChannel =
+			{
+				Enabled =
+				{
+					NumberOfIntervals = 2
+					Waveform =
+					{
+						0 =
+						{
+							x0 = 0.0
+							x1 = 963000.0
+							y0 = 0.0
+							y1 = 0.0
+							Interpolation = Constant
+						}
+						1 =
+						{
+							x0 = 963000.0
+							x1 = 1500000.0
+							y0 = 1.0
+							y1 = 1.0
+							Interpolation = Constant
+						}
+					}
+				}
+				SpWaveform =		//set point for EFPS
+				{
+					NumberOfIntervals = 9
+					Waveform =
+					{
+						0 =
+						{
+							x0 = 0.0
+							x1 = 963000.0
+							y0 = 0.0
+							y1 = 0.0
+							Interpolation = Constant
+						}
+						1=
+						{
+							x0 = 963000.0
+							x1 = 1000000.0
+							y0 = 0.540
+							y1 = 0.540
+							Interpolation = Constant
+						}
+						2 =
+						{
+							x0 = 1000000.0
+							x1 = 1060000.0
+							y0 = 0.540
+							y1 = 0.56
+							Interpolation = Linear
+						}
+						3 =
+						{
+							x0 = 1060000.0
+							x1 = 1061000.0
+							y0 = 0.56
+							y1 = 0.56
+							Interpolation = Linear
+						}
+						4 =
+						{
+							x0 = 1061000.0
+							x1 = 1090000.0
+							y0 = 0.56
+							y1 = 0.56
+							Interpolation = Linear
+						}
+						5 =
+						{
+							x0 = 1090000.0
+							x1 = 1110000.0
+							y0 = 0.56
+							y1 = 0.56
+							Interpolation = Linear
+						}
+						6 =
+						{
+							x0 = 1110000.0
+							x1 = 1180000.0
+							y0 = 0.56
+							y1 = 0.56
+							Interpolation = Linear
+						}
+						7 =
+						{
+							x0 = 1180000.0
+							x1 = 1250000.0
+							y0 = 0.56
+							y1 = 0.56
+							Interpolation = Linear
+						}
+						8 =
+						{
+							x0 = 1250000.0
+							x1 = 1300000.0
+							y0 = 0.56
+							y1 = 0.540
+							Interpolation = Linear
+						}
+					}
+				}
+				KpWaveform =
+				{
+					NumberOfIntervals = 3
+					Waveform =
+					{
+
+						0 =
+						{
+							x0 = 0.0
+							x1 = 963000.0
+							y0 = 0.0
+							y1 = 0.0
+							Interpolation = Constant
+						}
+						1 =
+						{
+							x0 = 963000.0
+							x1 = 1500000.0
+							y0 = 0.5
+							y1 = 0.5
+							Interpolation = Constant
+						}
+						2 = 
+						{
+							x0 = 1500000.0
+							x1 = 1600000.0
+							y0 = 0.0
+							y1 = 0.0
+							Interpolation = Constant
+						}
+					}
+				}
+				KiWaveform =
+				{
+					NumberOfIntervals = 1
+					Waveform =
+					{
+						
+						
+						0 =
+						{
+							x0 = 963000.0
+							x1 = 1500000.0
+							y0 = 0.00002
+							y1 = 0.00002
+							Interpolation = Constant
+
+						}	
+						
+						
+						
+					}
+				}
+				KdWaveform =
+				{
+					NumberOfIntervals = 1
+					Waveform =
+					{
+						0 =
+						{
+							x0 = 0.0
+							x1 = 1200000.0
+							y0 = 0.0
+							y1 = 0.0
+							Interpolation = Constant
+						}
+					}
+				}
+			}
+			BvCurrentChannel =
+			{
+    			SmoothTimeInMicroSec = 19000
+				BvDivConst = 5.0
+				Enabled =
+				{
+					NumberOfIntervals = 3
+					Waveform =
+					{
+						0 =
+						{
+							x0 = 0.0
+							x1 = 963000.0
+							y0 = 0.0
+							y1 = 0.0
+							Interpolation = Constant
+						}
+						1 =
+						{
+							x0 = 963000.0
+							x1 = 1500000.0
+							y0 = 1.0
+							y1 = 1.0
+							Interpolation = Constant
+						}
+						2 =
+						{
+							x0 = 1500000.0
+							x1 = 1600000.0
+							y0 = 0.0
+							y1 = 0.0
+							Interpolation = Constant
+						}
+					}
+				}
+			}

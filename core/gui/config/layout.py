@@ -26,7 +26,10 @@ def config_layout_channels(config_id, config, app):
     """
     channels = get_channels(config)
     row = html.Div(
-        [channel_layout(config_id + "_" + i[0], i[0], i[1], app) for i in channels.items()]
+        [
+            channel_layout(config_id + "_" + i[0], i[0], i[1], app)
+            for i in channels.items()
+        ]
     )
 
     return row
@@ -40,8 +43,11 @@ def config_layout_waveform(config_id, config, app):
     :param app:
     :return:
     """
-    contents = html.Div(waveform_layout(config_id + "_waveform", "waveform", config.waveform, app))
+    contents = html.Div(
+        waveform_layout(config_id + "_waveform", "waveform", config.waveform, app)
+    )
     return html.Div([contents])
+
 
 def get_channels(conf):
     """
@@ -57,44 +63,43 @@ def get_channels(conf):
 
     return channels
 
+
 if __name__ == "__main__":
 
     from Marconpa.core.configs.configfile import get_config_object
 
-    class Marta():
-
+    class Marta:
         def __init__(self):
 
             self.app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
             self.callback_list = []
-            self.app.config['suppress_callback_exceptions'] = True
+            self.app.config["suppress_callback_exceptions"] = True
 
     def generate_upload_layout():
         """
         Returns html.Div containing dcc.Upload, which server for file selection and upload.
         :return: Div
         """
-        layout = html.Div([
-            dcc.Upload(
-                id='upload-data',
-                children=html.Div([
-                    'Drag and Drop or ',
-                    html.A('Select Files')
-                ]),
-                style={
-                    'width': '100%',
-                    'height': '60px',
-                    'lineHeight': '60px',
-                    'borderWidth': '1px',
-                    'borderStyle': 'dashed',
-                    'borderRadius': '5px',
-                    'textAlign': 'center',
-                    'margin': '10px'
-                },
-                # Allow multiple files to be uploaded
-                multiple=True
-            ),
-        ])
+        layout = html.Div(
+            [
+                dcc.Upload(
+                    id="upload-data",
+                    children=html.Div(["Drag and Drop or ", html.A("Select Files")]),
+                    style={
+                        "width": "100%",
+                        "height": "60px",
+                        "lineHeight": "60px",
+                        "borderWidth": "1px",
+                        "borderStyle": "dashed",
+                        "borderRadius": "5px",
+                        "textAlign": "center",
+                        "margin": "10px",
+                    },
+                    # Allow multiple files to be uploaded
+                    multiple=True,
+                )
+            ]
+        )
 
         return layout
 
@@ -112,29 +117,25 @@ if __name__ == "__main__":
 
     marta = Marta()
 
-
     loading = generate_upload_layout()
 
-    #tabs = setlayout(None, None, None)
+    # tabs = setlayout(None, None, None)
 
-    layout = html.Div([html.Div(loading), html.Div(id="div_tabs"), html.Div(id="hidden")])
+    layout = html.Div(
+        [html.Div(loading), html.Div(id="div_tabs"), html.Div(id="hidden")]
+    )
 
+    marta.app.layout = layout
 
-    marta.app.layout =  layout
+    marta.app.callback(
+        Output("div_tabs", "children"),
+        [Input("upload-data", "contents")],
+        [State("upload-data", "filename"), State("upload-data", "last_modified")],
+    )(setlayout)
 
-
-
-
-    marta.app.callback(Output('div_tabs', 'children'),
-                      [Input('upload-data', 'contents')],
-                      [State('upload-data', 'filename'),
-                       State('upload-data', 'last_modified')])(setlayout)
-
-
-    #def register_callbacks(inout):
+    # def register_callbacks(inout):
     #    for callback in marta.callback_list:
     #        marta.app.callback(**callback["parameters"])(callback["action"])
-    #marta.app.callback(Output("hidden", "children"), [Input("div_tabs", "children")])(register_callbacks)
-
+    # marta.app.callback(Output("hidden", "children"), [Input("div_tabs", "children")])(register_callbacks)
 
     marta.app.run_server(debug=True)

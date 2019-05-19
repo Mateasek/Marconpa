@@ -13,6 +13,7 @@ from Marconpa.core.gui.waveform.layout import waveform_layout
 from Marconpa.core.configs.wave_form import Waveform
 from Marconpa.core.gui.channel.components import attributes_table
 
+
 def get_waveforms(channel):
     """
     Extract wavefroms into an ordered dict
@@ -25,7 +26,7 @@ def get_waveforms(channel):
     channel_content["waveforms"] = OrderedDict()
     for attrib in channel.__attrs_attrs__:
         attrib_value = getattr(channel, attrib.name)
-        if isinstance(attrib_value,Waveform) and attrib.name is "Enabled":
+        if isinstance(attrib_value, Waveform) and attrib.name is "Enabled":
             channel_content["waveforms"]["Enabled"] = attrib_value
 
     for attrib in channel.__attrs_attrs__:
@@ -39,6 +40,7 @@ def get_waveforms(channel):
 
     return channel_content
 
+
 def channel_layout(channel_id, channel_name, channel, app):
     """
     Generates content of the channel
@@ -51,22 +53,34 @@ def channel_layout(channel_id, channel_name, channel, app):
     channel_contents = get_waveforms(channel)
 
     if "attributes" in channel_contents.keys():
-        list_content = [html.Details([html.Summary("Attributes"), attributes_table(channel_id+"_attributes", channel_contents["attributes"])])]
+        list_content = [
+            html.Details(
+                [
+                    html.Summary("Attributes"),
+                    attributes_table(
+                        channel_id + "_attributes", channel_contents["attributes"]
+                    ),
+                ]
+            )
+        ]
 
     if bool(channel_contents["waveforms"]):
-        list_content += [html.Li(waveform_layout(channel_id + "_" + i[0], i[0], i[1], app)) for i in channel_contents["waveforms"].items()]
+        list_content += [
+            html.Li(waveform_layout(channel_id + "_" + i[0], i[0], i[1], app))
+            for i in channel_contents["waveforms"].items()
+        ]
         contents = html.Div(html.Ol(list_content, style={"listStyle": "none"}))
-        #contents = html.Div([waveform_layout(channel_id + "_" + i[0], i[0], i[1], app) for i in waveforms.items()])
+        # contents = html.Div([waveform_layout(channel_id + "_" + i[0], i[0], i[1], app) for i in waveforms.items()])
         return html.Details([html.Summary(channel_name), contents])
     else:
         return html.Div()
+
 
 if __name__ == "__main__":
 
     from Marconpa.core.configs.configfile import get_config_object
 
-    class Marta():
-
+    class Marta:
         def __init__(self):
 
             self.app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
@@ -77,10 +91,9 @@ if __name__ == "__main__":
     density = get_config_object(configtype, configfolder)
 
     marta = Marta()
-    marta.app.config['suppress_callback_exceptions'] = True
+    marta.app.config["suppress_callback_exceptions"] = True
 
     layout = channel_layout("test_channel", "SP", density.FeedbackChannel, marta)
 
-
-    marta.app.layout =  layout
+    marta.app.layout = layout
     marta.app.run_server(debug=True)

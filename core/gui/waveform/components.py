@@ -7,6 +7,7 @@ import pandas as pd
 from dash.dependencies import Input, Output, State
 import base64
 
+
 def waveform_table(id, setpoints):
     """
     Constructs table for waveform display
@@ -14,16 +15,27 @@ def waveform_table(id, setpoints):
     :param setpoints: Setpoints from waveform to fill the table
     :return:
     """
-    data = [ {"index":index, "x0":setpoints["x0"][index], "x1":setpoints["x1"][index], "y0":setpoints["y0"][index],
-            "y1":setpoints["y1"][index], "Interpolation":setpoints["Interpolation"][index]} for index in range(setpoints["x0"].shape[0])]
+    data = [
+        {
+            "index": index,
+            "x0": setpoints["x0"][index],
+            "x1": setpoints["x1"][index],
+            "y0": setpoints["y0"][index],
+            "y1": setpoints["y1"][index],
+            "Interpolation": setpoints["Interpolation"][index],
+        }
+        for index in range(setpoints["x0"].shape[0])
+    ]
     return dash_table.DataTable(
         id=id,
         columns=[
-            {"name": i, "id": i} for i in ["index", "x0", "x1", "y0", "y1", "Interpolation"]
+            {"name": i, "id": i}
+            for i in ["index", "x0", "x1", "y0", "y1", "Interpolation"]
         ],
-        data= data,
+        data=data,
         editable=True,
     )
+
 
 def waveform_plot(id, setpoints):
     """
@@ -32,6 +44,14 @@ def waveform_plot(id, setpoints):
     :param setpoints:
     :return:
     """
-    data = {"data": [{"x":[setpoints["x0"][index], setpoints["x1"][index]], "y":[setpoints["y0"][index], setpoints["y1"][index]],
-             "type": "line"} for index in range(setpoints["x0"].shape[0])]}
+    data = {
+        "data": [
+            {
+                "x": [setpoints["x0"][index], setpoints["x1"][index]],
+                "y": [setpoints["y0"][index], setpoints["y1"][index]],
+                "type": "line",
+            }
+            for index in range(setpoints["x0"].shape[0])
+        ]
+    }
     return dcc.Graph(id=id, figure=data)

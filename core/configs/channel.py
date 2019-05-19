@@ -7,14 +7,11 @@ import attr
 @attr.s(auto_attribs=True)
 class Channel:
 
-
     attributes: Dict[str, Union[str, int, float, bool]]
 
     Enabled: Waveform
 
     waveforms: Dict[str, Waveform]
-
-
 
     @classmethod
     def parsed_channel(cls, data):
@@ -23,7 +20,6 @@ class Channel:
         :param data: Dictionary containing data from channel
         :return: Channel instance
         """
-
 
         attributes = {}
         waveforms = {}
@@ -42,20 +38,22 @@ class Channel:
         fields = []
         for attrib in self.attributes.items():
             if isinstance(attrib[1], list):
-                fields+= ["\t" * depth + str(attrib[0]) + " = " + list2string(attrib[1])]
+                fields += [
+                    "\t" * depth + str(attrib[0]) + " = " + list2string(attrib[1])
+                ]
             else:
                 fields += dict2stringlist({attrib[0]: attrib[1]}, depth=depth)
 
         fields.append("\t" * depth + "Enabled = ")
         fields.append("\t" * depth + "{")
-        fields += self.Enabled.export_as_listofstring(depth=depth+1)
+        fields += self.Enabled.export_as_listofstring(depth=depth + 1)
         fields.append("\t" * depth + "}")
 
         for attrib in self.waveforms.items():
             if isinstance(attrib[1], Waveform):
                 fields.append("\t" * depth + str(attrib[0]))
                 fields.append("\t" * depth + "{")
-                fields += attrib[1].export_as_listofstring(depth=depth+1)
+                fields += attrib[1].export_as_listofstring(depth=depth + 1)
                 fields.append("\t" * depth + "}")
 
         return fields
@@ -70,7 +68,6 @@ if __name__ == "__main__":
     from Marconpa.examples.example import parse_density
 
     conf = parse_density()
-
 
     fch = Channel.parsed_channel(conf["FeedbackChannel"])
     a = fch.as_lisfofstrings()

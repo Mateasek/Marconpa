@@ -15,13 +15,16 @@ def attributes_table(id, attributes):
     :param setpoints: Setpoints from waveform to fill the table
     :return:
     """
-    data = [{"attribute name": key, "value": str(item)} for key, item in attributes.items()]
+    data = []
+    for key, item in attributes.items():
+        data.append({"attribute name": key, "value": str(item)})
+        if isinstance(item, list):
+            data[-1]["value"] = data[-1]["value"].replace("[", "{")
+            data[-1]["value"] = data[-1]["value"].replace("]", "}")
 
     return dash_table.DataTable(
         id=id,
-        columns=[
-            {"name": i, "id": i} for i in ["attribute name", "value"]
-        ],
-        data= data,
+        columns=[{"name": i, "id": i} for i in ["attribute name", "value"]],
+        data=data,
         editable=True,
     )

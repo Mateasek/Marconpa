@@ -1,5 +1,6 @@
 from Marconpa.core.configs.wave_form import Waveform
 
+
 def callback_table_as_waveform(table_data):
     """
      Transforming data table into dictionary to be used as input into waveform class
@@ -16,9 +17,12 @@ def callback_table_as_waveform(table_data):
     waveform_dict = {"NumberOfIntervals": len(table_data)}
     waveform_dict["Waveform"] = {}
     for interval, row in enumerate(table_data):
-        waveform_dict["Waveform"][str(interval)] = {"Interpolation": str(row["Interpolation"]),
-                                                    "x0": row["x0"], "x1": row["x1"], "y0": row["y0"], "y1": row["y1"]}
+        waveform_dict["Waveform"][str(interval)] = {
+            "Interpolation": str(row["Interpolation"]),
+            "x0": row["x0"],
+            "x1": row["x1"],
+            "y0": row["y0"],
+            "y1": row["y1"],
+        }
 
     return Waveform(waveform_dict)
-
-

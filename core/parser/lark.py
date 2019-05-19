@@ -1,11 +1,13 @@
-from lark import Lark          # pip install lark-parser
+from lark import Lark  # pip install lark-parser
 from lark import Transformer
 
 
 class MarteConfigParser:
     """Class created for parsing MARTe configs. Use parse_config method."""
+
     def __init__(self):
-        self.marte_parser = Lark(r"""
+        self.marte_parser = Lark(
+            r"""
             ?value: number
                   | string
                   | pair
@@ -37,11 +39,14 @@ class MarteConfigParser:
                    | "/*" /(.|\n|\r)+/ "*/"  // multi-line comment
             %ignore COMMENT
 
-            """, start='value')
-        
+            """,
+            start="value",
+        )
+
     class TreeToPython(Transformer):
         def string(self, s):
             return str(s[0])
+
         def number(self, n):
             value = None
             try:
@@ -56,8 +61,8 @@ class MarteConfigParser:
 
     def parse_config(self, config_text):
         config_text = "{" + config_text + "}"
-        
+
         tree = self.marte_parser.parse(config_text)
         out = self.TreeToPython().transform(tree)
-        
+
         return out

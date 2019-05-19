@@ -51,7 +51,7 @@ def channel_layout(channel_id, channel_name, channel, app):
     channel_contents = get_waveforms(channel)
 
     if "attributes" in channel_contents.keys():
-        list_content = [html.Details([html.Summary("attributes"), attributes_table(channel_id+"_attributes", channel_contents["attributes"])])]
+        list_content = [html.Details([html.Summary("Attributes"), attributes_table(channel_id+"_attributes", channel_contents["attributes"])])]
 
     if bool(channel_contents["waveforms"]):
         list_content += [html.Li(waveform_layout(channel_id + "_" + i[0], i[0], i[1], app)) for i in channel_contents["waveforms"].items()]

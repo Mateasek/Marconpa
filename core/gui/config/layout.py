@@ -7,13 +7,13 @@ import pandas as pd
 from dash.dependencies import Input, Output, State
 import base64
 
-from Marconpa.core.gui.waveform.layout import waveform_layout
-from Marconpa.core.gui.channel.layout import channel_layout
-from Marconpa.core.parser.lark import MarteConfigParser
-from Marconpa.core.configs.configfile import Density
-from Marconpa.examples.example import parse_density
-from Marconpa.core.configs.configfile import Density
-from Marconpa.core.configs.channel import Channel
+from marconpa.core.gui.waveform.layout import waveform_layout
+from marconpa.core.gui.channel.layout import channel_layout
+from marconpa.core.parser.lark import MarteConfigParser
+from marconpa.core.configs.configfile import Density
+from marconpa.examples.example import parse_density
+from marconpa.core.configs.configfile import Density
+from marconpa.core.configs.channel import Channel
 
 
 def config_layout_channels(config_id, config, app):
@@ -66,7 +66,7 @@ def get_channels(conf):
 
 if __name__ == "__main__":
 
-    from Marconpa.core.configs.configfile import get_config_object
+    from marconpa.core.configs.configfile import get_config_object
 
     class Marta:
         def __init__(self):

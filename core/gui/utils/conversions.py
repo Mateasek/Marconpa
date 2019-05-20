@@ -1,4 +1,4 @@
-from Marconpa.core.configs.wave_form import Waveform
+from marconpa.core.configs.wave_form import Waveform
 
 
 def callback_table_as_waveform(table_data):

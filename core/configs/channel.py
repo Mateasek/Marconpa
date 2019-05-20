@@ -1,5 +1,5 @@
-from Marconpa.core.configs.wave_form import Waveform
-from Marconpa.core.utils.conversions import dict2stringlist, list2string
+from marconpa.core.configs.wave_form import Waveform
+from marconpa.core.utils.conversions import dict2stringlist, list2string
 from typing import Dict, Union
 import attr
 
@@ -65,7 +65,7 @@ class Channel:
 
 
 if __name__ == "__main__":
-    from Marconpa.examples.example import parse_density
+    from marconpa.examples.example import parse_density
 
     conf = parse_density()
 

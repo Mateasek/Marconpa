@@ -9,9 +9,9 @@ import base64
 from typing import Dict
 from collections import OrderedDict
 
-from Marconpa.core.gui.waveform.layout import waveform_layout
-from Marconpa.core.configs.wave_form import Waveform
-from Marconpa.core.gui.channel.components import attributes_table
+from marconpa.core.gui.waveform.layout import waveform_layout
+from marconpa.core.configs.wave_form import Waveform
+from marconpa.core.gui.channel.components import attributes_table
 
 
 def get_waveforms(channel):
@@ -78,7 +78,7 @@ def channel_layout(channel_id, channel_name, channel, app):
 
 if __name__ == "__main__":
 
-    from Marconpa.core.configs.configfile import get_config_object
+    from marconpa.core.configs.configfile import get_config_object
 
     class Marta:
         def __init__(self):

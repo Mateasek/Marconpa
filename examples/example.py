@@ -1,4 +1,4 @@
-from Marconpa.core.parser.lark import MarteConfigParser
+from marconpa.core.parser.lark import MarteConfigParser
 
 
 def parse_density():

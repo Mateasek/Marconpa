@@ -5,8 +5,8 @@ import pandas as pd
 from dash._utils import create_callback_id
 import dash
 
-from Marconpa.core.gui.waveform.components import waveform_table, waveform_plot
-from Marconpa.core.gui.waveform.callback import callback_tablechanged
+from marconpa.core.gui.waveform.components import waveform_table, waveform_plot
+from marconpa.core.gui.waveform.callback import callback_tablechanged
 
 
 def waveform_layout(waveform_id, waveform_name, waveform, app):
@@ -41,7 +41,7 @@ def waveform_layout(waveform_id, waveform_name, waveform, app):
 
 
 if __name__ == "__main__":
-    from Marconpa.core.configs.configfile import get_config_object
+    from marconpa.core.configs.configfile import get_config_object
 
     class Marta:
         def __init__(self):

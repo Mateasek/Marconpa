@@ -2,15 +2,15 @@ import dash_core_components as dcc
 import dash_html_components as html
 import base64
 
-from Marconpa.core.parser.lark import MarteConfigParser
-from Marconpa.core.configs.configfile import (
+from marconpa.core.parser.lark import MarteConfigParser
+from marconpa.core.configs.configfile import (
     config_types,
     StandartConfig,
     WaveformConfig,
     EFPS,
 )
 
-from Marconpa.core.gui.components import generate_tab_channels, generate_tab_waveform
+from marconpa.core.gui.components import generate_tab_channels, generate_tab_waveform
 
 
 def tab_structure_from_files(app, list_of_contents, list_of_names):

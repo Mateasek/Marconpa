@@ -8,9 +8,11 @@ from marconpa.core.gui.utils import IdHandler
 
 def generate_tab_channels(app, config_instance, key):
 
-    textarea = generate_config_textarea(config_instance, key)
     config_id = IdHandler(name=key, component_type="ConfigFile")
     contents, callback_list= config_layout_channels(app, config_instance, config_id)
+    textarea, textarea_id = generate_config_textarea(config_instance, config_id)
+    callback_list.append(textarea_id)
+
     tab = dcc.Tab(
         label=key,
         id=config_id.id,
@@ -27,9 +29,12 @@ def generate_tab_channels(app, config_instance, key):
 
 def generate_tab_waveform(app, config_instance, key):
 
-    textarea = generate_config_textarea(config_instance, key)
     config_id = IdHandler(name=key, component_type="ConfigFile")
-    contents, callbacks = config_layout_waveform(app, config_instance, config_id)
+    contents, callback_list = config_layout_waveform(app, config_instance, config_id)
+
+    textarea, textarea_id = generate_config_textarea(config_instance, config_id)
+    callback_list.append(textarea_id)
+
     tab = dcc.Tab(
         label=key,
         id=config_id.id,
@@ -40,20 +45,21 @@ def generate_tab_waveform(app, config_instance, key):
             ),
         ],
     )
-    return tab, callbacks
+    return tab, callback_list
 
 
-def generate_config_textarea(config_instance, key):
+def generate_config_textarea(config_instance, parent_id):
+    textarea_id = IdHandler(name=parent_id.name, component_type="textArea", parent=parent_id)
     textarea = html.Div(
         dcc.Textarea(
-            placeholder="{0} configuration file".format(key),
-            id="text_{0}".format(key),
+            placeholder="{0} configuration file".format(textarea_id.name),
+            id="text_{0}".format(textarea_id.id),
             value=config_instance.as_string(),
             style={"width": "100%", "height": 600},
         )
     )
 
-    return textarea
+    return textarea, textarea_id
 
 def generate_upload_layout():
     """

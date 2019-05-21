@@ -23,4 +23,4 @@ def attributes_table(attributes, parent_id):
         editable=True,
     )
 
-    return table, {"table": table_id}
+    return table,  [table_id]

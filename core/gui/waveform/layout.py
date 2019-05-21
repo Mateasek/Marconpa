@@ -38,7 +38,7 @@ def waveform_layout(app, waveform, waveform_name, parent_id):
     if not create_callback_id(output) in app.app.callback_map:
         app.app.callback(output, [Input(table_id.id, "data")])(callback_tablechanged)
 
-    return return_div, {"table":table_id, "plot":plot_id}
+    return return_div, [table_id, plot_id]
 
 
 if __name__ == "__main__":

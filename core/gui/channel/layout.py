@@ -56,7 +56,7 @@ def channel_layout(app, channel, channel_name, parent_id):
     callback_list = []
     if "attributes" in channel_contents.keys():
         content, callback = attributes_table(channel_contents["attributes"], channel_id)
-        callback_list.append(callback)
+        callback_list += callback
         content_list.append(
             html.Details(
                 [
@@ -71,7 +71,7 @@ def channel_layout(app, channel, channel_name, parent_id):
         for key, item in channel_contents["waveforms"].items():
             content, callback =  waveform_layout(app, item, key, channel_id)
             content_list.append(html.Li(content))
-            callback_list.append(callback)
+            callback_list +=callback
         contents = html.Div(html.Ol(content_list, style={"listStyle": "none"}))
         # contents = html.Div([waveform_layout(channel_id + "_" + i[0], i[0], i[1], app) for i in waveforms.items()])
         return html.Details([html.Summary(channel_name), contents]), callback_list

@@ -6,7 +6,7 @@ import dash_table
 import pandas as pd
 from dash.dependencies import Input, Output, State
 import base64
-
+from marconpa.core.gui.utils import IdHandler
 
 def waveform_table(id, setpoints):
     """

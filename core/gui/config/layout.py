@@ -2,21 +2,14 @@ import dash
 import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 import dash_html_components as html
-import dash_table
-import pandas as pd
 from dash.dependencies import Input, Output, State
-import base64
 
 from marconpa.core.gui.waveform.layout import waveform_layout
 from marconpa.core.gui.channel.layout import channel_layout
-from marconpa.core.parser.lark import MarteConfigParser
-from marconpa.core.configs.configfile import Density
-from marconpa.examples.example import parse_density
-from marconpa.core.configs.configfile import Density
 from marconpa.core.configs.channel import Channel
 
 
-def config_layout_channels(config_id, config, app):
+def config_layout_channels(app, config, config_id):
     """
     Constructs content of configuration file tab containing multiple channels
     :param config_id: Id to use for the children
@@ -25,17 +18,19 @@ def config_layout_channels(config_id, config, app):
     :return: contents of the tab for configuration file
     """
     channels = get_channels(config)
-    row = html.Div(
-        [
-            channel_layout(config_id + "_" + i[0], i[0], i[1], app)
-            for i in channels.items()
-        ]
-    )
+    contents = []
+    callback_list = []
+    for key, item in channels.items():
+        content, callback = channel_layout(app, item, key, config_id)
+        callback_list +=callback
+        contents.append(content)
 
-    return row
+    row = html.Div( contents)
+
+    return row, callback_list
 
 
-def config_layout_waveform(config_id, config, app):
+def config_layout_waveform(app, config, config_id):
     """
     Constructs content of configuration file tab containing a single waveform
     :param config_id:
@@ -43,10 +38,11 @@ def config_layout_waveform(config_id, config, app):
     :param app:
     :return:
     """
-    contents = html.Div(
-        waveform_layout(config_id + "_waveform", "waveform", config.waveform, app)
-    )
-    return html.Div([contents])
+
+    content, callback = waveform_layout(app, config.waveform, "Waveform", config_id)
+
+    contents = html.Div(content)
+    return html.Div([contents]), callback
 
 
 def get_channels(conf):

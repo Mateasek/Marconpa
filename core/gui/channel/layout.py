@@ -12,7 +12,7 @@ from collections import OrderedDict
 from marconpa.core.gui.waveform.layout import waveform_layout
 from marconpa.core.configs.wave_form import Waveform
 from marconpa.core.gui.channel.components import attributes_table
-
+from marconpa.core.gui.utils import IdHandler
 
 def get_waveforms(channel):
     """
@@ -41,7 +41,7 @@ def get_waveforms(channel):
     return channel_content
 
 
-def channel_layout(channel_id, channel_name, channel, app):
+def channel_layout(app, channel, channel_name, parent_id):
     """
     Generates content of the channel
     :param channel_id: Id for the channel
@@ -51,29 +51,32 @@ def channel_layout(channel_id, channel_name, channel, app):
     :return:
     """
     channel_contents = get_waveforms(channel)
-
+    channel_id = IdHandler(name=channel_name, component_type="Channel", parent=parent_id)
+    content_list = []
+    callback_list = []
     if "attributes" in channel_contents.keys():
-        list_content = [
+        content, callback = attributes_table(channel_contents["attributes"], channel_id)
+        callback_list.append(callback)
+        content_list.append(
             html.Details(
                 [
                     html.Summary("Attributes"),
-                    attributes_table(
-                        channel_id + "_attributes", channel_contents["attributes"]
-                    ),
-                ]
+                    content,
+                ],
+                id=channel_id.id
             )
-        ]
+        )
 
     if bool(channel_contents["waveforms"]):
-        list_content += [
-            html.Li(waveform_layout(channel_id + "_" + i[0], i[0], i[1], app))
-            for i in channel_contents["waveforms"].items()
-        ]
-        contents = html.Div(html.Ol(list_content, style={"listStyle": "none"}))
+        for key, item in channel_contents["waveforms"].items():
+            content, callback =  waveform_layout(app, item, key, channel_id)
+            content_list.append(html.Li(content))
+            callback_list.append(callback)
+        contents = html.Div(html.Ol(content_list, style={"listStyle": "none"}))
         # contents = html.Div([waveform_layout(channel_id + "_" + i[0], i[0], i[1], app) for i in waveforms.items()])
-        return html.Details([html.Summary(channel_name), contents])
+        return html.Details([html.Summary(channel_name), contents]), callback_list
     else:
-        return html.Div()
+        return html.Div(), callback_list
 
 
 if __name__ == "__main__":

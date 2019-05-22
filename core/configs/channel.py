@@ -25,9 +25,9 @@ class Channel:
         waveforms = {}
         for i in data.keys():
             if i == "Enabled":
-                enabled = Waveform(data["Enabled"])
+                enabled = Waveform.from_waveform_dict(data["Enabled"])
             elif type(data[i]) is dict and not i == "Enabled":
-                waveforms[i] = Waveform(wave_form_dict=data[i])
+                waveforms[i] = Waveform.from_waveform_dict(wave_form_dict=data[i])
             else:
                 attributes[i] = data[i]
 

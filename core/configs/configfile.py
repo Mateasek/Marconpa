@@ -112,7 +112,7 @@ class WaveformConfig(ConfigFile):
 
     @classmethod
     def from_parsed(cls, data):
-        return cls(waveform=Waveform(data))
+        return cls(waveform=Waveform.from_waveform_dict(data))
 
     def as_listofstrings(self):
         return self.waveform.export_as_listofstring()

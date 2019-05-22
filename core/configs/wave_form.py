@@ -17,66 +17,23 @@ class Waveform:
 
     """
 
-    def __init__(self, wave_form_dict):
+    def __init__(self, waveform, numberofintervals):
         """
         read and check wave form
         :param wave_form_dict:
         """
-        try:
-            self.waveform = pd.DataFrame.from_dict(
-                wave_form_dict["Waveform"], orient="index"
-            )
-            if np.any(
-                self.waveform.iloc[:]["x0"]
-                != self.waveform.sort_values(by=["x0"]).iloc[:]["x0"]
-            ):
-                warnings.warn("Time intervals are not sorted ")
-                if np.any(
-                    self.waveform[1:]["x0"].values != self.waveform[:-1]["x1"].values
-                ):
-                    warnings.warn("check the set points - they are not continuous")
-                    indexOfConflicts = np.nonzero(
-                        self.waveform[1:]["x0"].values - self.waveform[:-1]["x1"].values
-                    )
-                    for i in range(len(indexOfConflicts)):
-                        if (
-                            self.waveform.iloc[indexOfConflicts[i + 1]]["x0"].values
-                            > self.waveform.iloc[indexOfConflicts[i]]["x1"].values
-                        ):
-                            print(
-                                "Times subinterval number {ni} ends latter than the next interval starts. \
-                            End time {t_end} of this interval set to  the time {t_begin} when next interval\
-                            starts.".format(
-                                    ni=indexOfConflicts[i],
-                                    t_end=self.waveform.iloc[indexOfConflicts[i + 1]][
-                                        "x0"
-                                    ].values[0],
-                                    t_begin=self.waveform.iloc[indexOfConflicts[i]][
-                                        "x1"
-                                    ].values[0],
-                                )
-                            )
-                            self.waveform.at[
-                                indexOfConflicts[i], "x1"
-                            ] = self.waveform.iloc[i + 1][["x0"]].values[0]
-                        else:
-                            print(
-                                "Times subinterval number {ni} ends earlier than the next interval starts. Gap filled\
-                                                    by zeros".format(
-                                    ni=indexOfConflicts[i]
-                                )
-                            )
-                            if wave_form_dict["NumberOfIntervals"] < len(
-                                self.waveform.index
-                            ):
-                                wave_form_dict["NumberOfIntervals"] = len(
-                                    self.waveform.index
-                                )
-                                pokus = self.waveform.set_index("x0")
+        self.waveform = waveform
+        self.numberofintervals = numberofintervals
 
+
+    @classmethod
+    def from_waveform_dict(cls, wave_form_dict):
+
+        try:
+            waveform = wave_form_dict["Waveform"]
         except KeyError:
-            print("Missing key Waveform. Set to one interval with y=0")
-            self.waveform = {
+            warnings.warn("Missing key Waveform. Set to one interval with y=0")
+            waveform = {
                 "Waveform": {
                     0: dict(
                         Interpolation="Constant",
@@ -87,20 +44,123 @@ class Waveform:
                     )
                 }
             }
+        finally:
+            waveform = pd.DataFrame.from_dict(waveform, orient="index")
 
         try:
-            self.NofIntervals = wave_form_dict["NumberOfIntervals"]
-            if self.NofIntervals < len(self.waveform.index):
-                warnings.warn(
-                    "NumberOfIntervals is lower than number of time intervals inserted by pilot"
-                )
-            elif self.NofIntervals > len(self.waveform.index):
-                warnings.warn(
-                    "NumberOfIntervals is larger than number of time intervals inserted by pilot"
-                )
+            numberofintervals = wave_form_dict["NumberOfIntervals"]
         except KeyError:
-            print("Missing key NumberOfIntervals. Set to 0")
-            self.waveform = {"NumberOfIntervals": 0}
+            warnings.warn("NumberOfIntervals is missing. Setting to 0.")
+            numberofintervals = 0
+
+        return cls(waveform, numberofintervals)
+
+    @property
+    def waveform(self):
+        return self._waveform
+
+    @waveform.setter
+    def waveform(self, value):
+        if not isinstance(value, pd.DataFrame):
+            raise ValueError("waveform has to be pandas.DataFrame")
+        self._waveform = value
+
+    @property
+    def numberofintervals(self):
+        return self._numberofintervals
+
+    @numberofintervals.setter
+    def numberofintervals(self, value):
+        if value < 0:
+            warnings.warn("numberofintervals set to 0 because value < 0")
+            self._numberofintervals = 0
+        else:
+            self._numberofintervals = value
+
+    def iscontinupus(self):
+        state = True
+        message = ""
+        if np.any(
+                self.waveform[1:]["x0"].values != self.waveform[:-1]["x1"].values
+        ):
+            state = False
+            message = "check the set points - they are not continuous"
+
+        return state, message
+    
+    def unknown_magic(self):
+
+        if np.any(
+                self.waveform[1:]["x0"].values != self.waveform[:-1]["x1"].values
+        ):
+            warnings.warn("check the set points - they are not continuous")
+            indexOfConflicts = np.nonzero(
+                self.waveform[1:]["x0"].values - self.waveform[:-1]["x1"].values
+            )
+            for i in range(len(indexOfConflicts)):
+                if (
+                        self.waveform.iloc[indexOfConflicts[i + 1]]["x0"].values
+                        > self.waveform.iloc[indexOfConflicts[i]]["x1"].values
+                ):
+                    print(
+                        "Times subinterval number {ni} ends latter than the next interval starts. \
+                    End time {t_end} of this interval set to  the time {t_begin} when next interval\
+                    starts.".format(
+                            ni=indexOfConflicts[i],
+                            t_end=self.waveform.iloc[indexOfConflicts[i + 1]][
+                                "x0"
+                            ].values[0],
+                            t_begin=self.waveform.iloc[indexOfConflicts[i]][
+                                "x1"
+                            ].values[0],
+                        )
+                    )
+                    self.waveform.at[
+                        indexOfConflicts[i], "x1"
+                    ] = self.waveform.iloc[i + 1][["x0"]].values[0]
+                else:
+                    print(
+                        "Times subinterval number {ni} ends earlier than the next interval starts. Gap filled\
+                                            by zeros".format(
+                            ni=indexOfConflicts[i]
+                        )
+                    )
+                    if numberofintervals < len(
+                            self.waveform.index
+                    ):
+                        numberofintervals = len(
+                            self.waveform.index
+                        )
+                        pokus = self.waveform.set_index("x0")
+
+
+    def issorted(self):
+        state = True
+        message = ""
+        if np.any(
+                self.waveform.iloc[:]["x0"]
+                != self.waveform.sort_values(by=["x0"]).iloc[:]["x0"]
+        ):
+            message = "Time intervals are not sorted "
+            state = False
+
+        return state, message
+
+    def numberofintervals_match_waveform(self):
+
+        state = True
+        message = ""
+        if self.numberofintervals < len(self.waveform.index):
+            message = "NumberOfIntervals is lower than number of time intervals inserted by pilot"
+            warnings.warn(message)
+            state = False
+
+        elif self.numberofintervals > len(self.waveform.index):
+            message = "NumberOfIntervals is larger than number of time intervals inserted by pilot"
+            warnings.warn(message)
+            state = False
+
+        return state, message
 
     def return_value(self, t_value):
         """
@@ -158,7 +218,7 @@ class Waveform:
 
     def export_as_listofstring(self, depth=0):
         listofstrings = [
-            "\t" * depth + "NumberOfIntervals = {0:d}".format(self.NofIntervals)
+            "\t" * depth + "NumberOfIntervals = {0:d}".format(self.numberofintervals)
         ]
         listofstrings.append("\t" * depth + "Waveform =")
         listofstrings.append("\t" * depth + "{")

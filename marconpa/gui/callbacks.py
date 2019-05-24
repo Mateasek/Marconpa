@@ -6,17 +6,17 @@ import json
 from dash._utils import create_callback_id
 from dash.dependencies import Input, Output, State
 from marconpa.core.parser.lark import MarteConfigParser
-from marconpa.core.configs.configfile import (
+from marconpa.core import (
     config_types,
     StandartConfig,
     WaveformConfig,
     EFPS,
 )
 
-from marconpa.core.gui.components import generate_tab_channels, generate_tab_waveform
-from marconpa.core.gui.utils import IdHandler
-from marconpa.core.gui.utils.conversions import waveformsetpoints2tabledata, channelattributes2tabledata, tabledata2channelattributes, callback_table_as_waveform
-from marconpa.core.gui.app import app, CONFIG_NAMES
+from marconpa.gui.components import generate_tab_channels, generate_tab_waveform
+from marconpa.gui.utils import IdHandler
+from marconpa.gui.utils.conversions import waveformsetpoints2tabledata, channelattributes2tabledata, tabledata2channelattributes, callback_table_as_waveform
+from marconpa.gui.app import app, CONFIG_NAMES
 from copy import copy, deepcopy
 
 def tab_structure_from_files(list_of_contents, list_of_names):

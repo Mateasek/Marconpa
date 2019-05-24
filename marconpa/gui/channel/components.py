@@ -1,6 +1,6 @@
 import dash_table
-from marconpa.core.gui.utils import IdHandler
-from marconpa.core.utils.conversions import list2string
+from marconpa.gui.utils import IdHandler
+from marconpa.utils.conversions import list2string
 
 def attributes_table(attributes, parent_id):
     """

@@ -1,8 +1,7 @@
 import attr
-from marconpa.core.configs.channel import Channel
-from marconpa.core.configs.wave_form import Waveform
+from marconpa.core import Channel
+from marconpa.core import Waveform
 from marconpa.core.parser.lark import MarteConfigParser
-from marconpa.core.utils.conversions import dict2stringlist
 
 
 @attr.s(auto_attribs=True)

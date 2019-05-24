@@ -1,12 +1,8 @@
-import dash
-import dash_bootstrap_components as dbc
-import dash_core_components as dcc
 import dash_html_components as html
-from dash.dependencies import Input, Output, State
 
-from marconpa.core.gui.waveform.layout import waveform_layout
-from marconpa.core.gui.channel.layout import channel_layout
-from marconpa.core.configs.channel import Channel
+from marconpa.gui.waveform.layout import waveform_layout
+from marconpa.gui.channel.layout import channel_layout
+from marconpa.core import Channel
 
 
 def config_layout_channels(config, config_id):

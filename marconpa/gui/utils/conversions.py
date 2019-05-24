@@ -1,5 +1,5 @@
-from marconpa.core.configs.wave_form import Waveform
-from marconpa.core.utils.conversions import list2string
+from marconpa.core import Waveform
+from marconpa.utils.conversions import list2string
 
 def callback_table_as_waveform(table_data):
     """

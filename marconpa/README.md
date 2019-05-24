@@ -8,7 +8,7 @@ Marconpa (MARTE configuration parser) lets you edit MARTE configuration files wi
 
 Marconpa needs **python >= 3.7** and the following libraries to run
 ```
-pip install lark-parser dash dash-daq dash_bootstrap_components
+pip install lark-parser dash dash-daq dash_bootstrap_components dash_table
 ```
 
 ### Installation
@@ -22,9 +22,9 @@ git clone https://repo.tok.ipp.cas.cz/User-libraries/Python/marconpa
 
 Go to 
 ```
-cd marconpa/core/gui
+cd marconpa/marconpa/gui
 ```
 and run the app
 ```
-python app.py
+python index.py
 ```

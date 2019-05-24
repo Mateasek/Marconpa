@@ -1,11 +1,11 @@
 import dash_core_components as dcc
 import dash_bootstrap_components as dbc
 import dash_html_components as html
-from marconpa.core.gui.config.layout import (
+from marconpa.gui.config.layout import (
     config_layout_channels,
     config_layout_waveform,
 )
-from marconpa.core.gui.utils import IdHandler
+from marconpa.gui.utils import IdHandler
 
 def generate_tab_channels(config_instance, key):
 

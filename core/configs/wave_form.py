@@ -3,8 +3,10 @@ import pandas as pd
 import numpy as np
 from scipy.interpolate import CubicSpline
 from marconpa.core.utils.conversions import dict2stringlist
+import attr
 
 
+@attr.s
 class Waveform:
     """
     Waveform from dictionary
@@ -17,12 +19,33 @@ class Waveform:
 
     """
 
+    _waveform = attr.ib(default=None)
+    _numberofintervals = attr.ib(default=None, type=int)
+
+    @_waveform.validator
+    def validate_waveform(self, attribute, value):
+
+        if value is None:
+           value = pd.DataFrame({
+                "Waveform": {
+                    0: dict(
+                        Interpolation="Constant",
+                        x0=0.0,
+                        x1=1500000.0,
+                        y0=0.0006,
+                        y1=0.0006,
+                    )
+                }
+            })
+        elif not isinstance(value, pd.DataFrame):
+            raise ValueError("Waveform has to be pandas.Dataframe")
+
     def __init__(self, waveform, numberofintervals):
         """
         read and check wave form
         :param wave_form_dict:
         """
-        self.waveform = waveform
+        self._waveform = waveform
         self.numberofintervals = numberofintervals
 
 
@@ -218,7 +241,7 @@ class Waveform:
 
     def export_as_listofstring(self, depth=0):
         listofstrings = [
-            "\t" * depth + "NumberOfIntervals = {0:d}".format(self.numberofintervals)
+            "\t" * depth + "NumberOfIntervals = {0:d}".format(self._numberofintervals)
         ]
         listofstrings.append("\t" * depth + "Waveform =")
         listofstrings.append("\t" * depth + "{")

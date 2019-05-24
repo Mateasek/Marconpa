@@ -1,17 +1,18 @@
 from marconpa.core.configs.wave_form import Waveform
 from marconpa.core.utils.conversions import dict2stringlist, list2string
 from typing import Dict, Union
+from collections import OrderedDict
 import attr
 
 
-@attr.s(auto_attribs=True)
+@attr.s
 class Channel:
 
-    attributes: Dict[str, Union[str, int, float, bool]]
+    waveforms = attr.ib(type = OrderedDict, default={})
+    attributes = attr.ib(type= OrderedDict, default={})
 
-    Enabled: Waveform
+    Enabled = attr.ib(type= Waveform, default=Waveform())
 
-    waveforms: Dict[str, Waveform]
 
     @classmethod
     def parsed_channel(cls, data):
@@ -51,7 +52,7 @@ class Channel:
 
         for attrib in self.waveforms.items():
             if isinstance(attrib[1], Waveform):
-                fields.append("\t" * depth + str(attrib[0]))
+                fields.append("\t" * depth + str(attrib[0]) + " = ")
                 fields.append("\t" * depth + "{")
                 fields += attrib[1].export_as_listofstring(depth=depth + 1)
                 fields.append("\t" * depth + "}")
@@ -64,14 +65,3 @@ class Channel:
         return text
 
 
-if __name__ == "__main__":
-    from marconpa.examples.example import parse_density
-
-    conf = parse_density()
-
-    fch = Channel.parsed_channel(conf["FeedbackChannel"])
-    a = fch.as_lisfofstrings()
-    b = "\n".join(a)
-
-    with open("test.txt", "w") as filesave:
-        filesave.write(b)

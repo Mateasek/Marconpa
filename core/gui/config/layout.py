@@ -9,7 +9,7 @@ from marconpa.core.gui.channel.layout import channel_layout
 from marconpa.core.configs.channel import Channel
 
 
-def config_layout_channels(app, config, config_id):
+def config_layout_channels(config, config_id):
     """
     Constructs content of configuration file tab containing multiple channels
     :param config_id: Id to use for the children
@@ -21,7 +21,7 @@ def config_layout_channels(app, config, config_id):
     contents = []
     callback_list = []
     for key, item in channels.items():
-        content, callback = channel_layout(app, item, key, config_id)
+        content, callback = channel_layout(item, key, config_id)
         callback_list +=callback
         contents.append(content)
 
@@ -30,7 +30,7 @@ def config_layout_channels(app, config, config_id):
     return row, callback_list
 
 
-def config_layout_waveform(app, config, config_id):
+def config_layout_waveform(config, config_id):
     """
     Constructs content of configuration file tab containing a single waveform
     :param config_id:
@@ -39,7 +39,7 @@ def config_layout_waveform(app, config, config_id):
     :return:
     """
 
-    content, callback = waveform_layout(app, config.waveform, "Waveform", config_id)
+    content, callback = waveform_layout(config.waveform, "Waveform", config_id)
 
     contents = html.Div(content)
     return html.Div([contents]), callback
@@ -59,79 +59,3 @@ def get_channels(conf):
 
     return channels
 
-
-if __name__ == "__main__":
-
-    from marconpa.core.configs.configfile import get_config_object
-
-    class Marta:
-        def __init__(self):
-
-            self.app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
-            self.callback_list = []
-            self.app.config["suppress_callback_exceptions"] = True
-
-    def generate_upload_layout():
-        """
-        Returns html.Div containing dcc.Upload, which server for file selection and upload.
-        :return: Div
-        """
-        layout = html.Div(
-            [
-                dcc.Upload(
-                    id="upload-data",
-                    children=html.Div(["Drag and Drop or ", html.A("Select Files")]),
-                    style={
-                        "width": "100%",
-                        "height": "60px",
-                        "lineHeight": "60px",
-                        "borderWidth": "1px",
-                        "borderStyle": "dashed",
-                        "borderRadius": "5px",
-                        "textAlign": "center",
-                        "margin": "10px",
-                    },
-                    # Allow multiple files to be uploaded
-                    multiple=True,
-                )
-            ]
-        )
-
-        return layout
-
-    def setlayout(input, filename, modified):
-        tabcontent = config_layout_channels("Density", density, marta)
-
-        tab = [dcc.Tab(label="Density", id="Density", children=[tabcontent])]
-        tabs = dcc.Tabs(id="config_tabs", value="Density", children=tab)
-        return tabs
-
-    configtype = "Density"
-    configfolder = "/home/maajk/configs/original/"
-
-    density = get_config_object(configtype, configfolder)
-
-    marta = Marta()
-
-    loading = generate_upload_layout()
-
-    # tabs = setlayout(None, None, None)
-
-    layout = html.Div(
-        [html.Div(loading), html.Div(id="div_tabs"), html.Div(id="hidden")]
-    )
-
-    marta.app.layout = layout
-
-    marta.app.callback(
-        Output("div_tabs", "children"),
-        [Input("upload-data", "contents")],
-        [State("upload-data", "filename"), State("upload-data", "last_modified")],
-    )(setlayout)
-
-    # def register_callbacks(inout):
-    #    for callback in marta.callback_list:
-    #        marta.app.callback(**callback["parameters"])(callback["action"])
-    # marta.app.callback(Output("hidden", "children"), [Input("div_tabs", "children")])(register_callbacks)
-
-    marta.app.run_server(debug=True)

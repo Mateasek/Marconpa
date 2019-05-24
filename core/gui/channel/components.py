@@ -1,5 +1,6 @@
 import dash_table
 from marconpa.core.gui.utils import IdHandler
+from marconpa.core.utils.conversions import list2string
 
 def attributes_table(attributes, parent_id):
     """
@@ -9,12 +10,11 @@ def attributes_table(attributes, parent_id):
     :return:
     """
     data = []
-    table_id = IdHandler(name="table", component_type="Attributes", parent=parent_id)
+    table_id = IdHandler(name="table", kind="Attributes", parent=parent_id)
     for key, item in attributes.items():
-        data.append({"attribute name": key, "value": str(item)})
         if isinstance(item, list):
-            data[-1]["value"] = data[-1]["value"].replace("[", "{")
-            data[-1]["value"] = data[-1]["value"].replace("]", "}")
+           item = list2string(item)
+        data.append({"attribute name": key, "value": str(item)})
 
     table = dash_table.DataTable(
         id=table_id.id,
@@ -23,4 +23,4 @@ def attributes_table(attributes, parent_id):
         editable=True,
     )
 
-    return table, {"table": table_id}
+    return table,  [table_id]

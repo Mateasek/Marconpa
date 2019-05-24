@@ -21,6 +21,7 @@ def list2string(data):
     for i in data:
         text += "{0} ".format(i)
 
+    text = text[0:-1]
     text += "}"
 
     return text

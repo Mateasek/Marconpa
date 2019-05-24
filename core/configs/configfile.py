@@ -32,9 +32,10 @@ class ConfigFile:
 @attr.s(auto_attribs=True)
 class StandartConfig(ConfigFile):
 
-    ProgrammedChannel: Channel
-    FeedbackChannel: Channel
-    FeedforwardChannel: Channel
+    ProgrammedChannel: Channel = Channel()
+    ProgrammedChannel: Channel = Channel()
+    FeedbackChannel: Channel = Channel()
+    FeedforwardChannel: Channel = Channel()
 
     @classmethod
     def from_parsed(cls, data):
@@ -85,10 +86,10 @@ class WPPC(StandartConfig):
 @attr.s(auto_attribs=True)
 class EFPS(ConfigFile):
 
-    EFPSProgrammedChannel: Channel
-    EFPSCurrentFeedbackChannel: Channel
-    PositionFeedbackChannel: Channel
-    BvCurrentChannel: Channel
+    EFPSProgrammedChannel: Channel = Channel()
+    EFPSCurrentFeedbackChannel: Channel = Channel()
+    PositionFeedbackChannel: Channel = Channel()
+    BvCurrentChannel: Channel = Channel()
     gam = "EFPS"
 
     @classmethod
@@ -108,7 +109,7 @@ class EFPS(ConfigFile):
 @attr.s(auto_attribs=True)
 class WaveformConfig(ConfigFile):
 
-    waveform: Waveform
+    waveform: Waveform = Waveform()
 
     @classmethod
     def from_parsed(cls, data):
@@ -168,8 +169,17 @@ if __name__ == "__main__":
     for i in config_types.keys():
         configs[i] = get_config_object(i, filetoload)
 
-    # for i in configs.items():
-    if True:
-        i = ("TFPS", configs["TFPS"])
+    for i in configs.items():
         with open(filetosave + i[0], "w") as fts:
             fts.write(i[1].as_string())
+
+    configs_exported = {}
+    for key, item in config_types.items():
+        configs_exported[key] = get_config_object(key, filetosave)
+
+    if False:
+        with open(filetosave+"FABR", "r") as fl:
+           cont = fl.read()
+
+        parser = MarteConfigParser()
+        parsed = parser.parse_config(cont)

@@ -3,10 +3,10 @@ import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output, State
-from marconpa.core.gui.callbacks import tab_structure_from_files
-from marconpa.core.gui.components import generate_upload_layout
-from marconpa.core.gui.app import app
-from marconpa.core.gui.utils import IdHandler
+from marconpa.gui.callbacks import tab_structure_from_files
+from marconpa.gui.components import generate_upload_layout
+from marconpa.gui.app import app
+from marconpa.gui.utils import IdHandler
 
 # generates clicking stuff to initiate file selection and upload
 upload_layout, upload_id, upload_output_id = generate_upload_layout()

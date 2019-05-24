@@ -1,6 +1,5 @@
-from marconpa.core.configs.wave_form import Waveform
-from marconpa.core.utils.conversions import dict2stringlist, list2string
-from typing import Dict, Union
+from marconpa.core import Waveform
+from marconpa.utils.conversions import dict2stringlist, list2string
 from collections import OrderedDict
 import attr
 

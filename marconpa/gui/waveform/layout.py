@@ -5,10 +5,10 @@ import pandas as pd
 from dash._utils import create_callback_id
 import dash
 
-from marconpa.core.gui.waveform.components import waveform_table, waveform_plot
-from marconpa.core.gui.waveform.callback import callback_tablechanged
-from marconpa.core.gui.utils import IdHandler
-from marconpa.core.gui.app import app
+from marconpa.gui.waveform.components import waveform_table, waveform_plot
+from marconpa.gui.waveform.callback import callback_tablechanged
+from marconpa.gui.utils import IdHandler
+from marconpa.gui.app import app
 def waveform_layout(waveform, waveform_name, parent_id):
     """
     Constructs content for the waveform part

@@ -2,7 +2,7 @@ import warnings
 import pandas as pd
 import numpy as np
 from scipy.interpolate import CubicSpline
-from marconpa.core.utils.conversions import dict2stringlist
+from marconpa.utils.conversions import dict2stringlist
 import attr
 
 

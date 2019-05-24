@@ -1,6 +1,6 @@
 import dash_core_components as dcc
 import dash_table
-from marconpa.core.gui.utils.conversions import waveformsetpoints2tabledata
+from marconpa.gui.utils.conversions import waveformsetpoints2tabledata
 
 def waveform_table(id, setpoints):
     """

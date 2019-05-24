@@ -9,10 +9,10 @@ import base64
 from typing import Dict
 from collections import OrderedDict
 
-from marconpa.core.gui.waveform.layout import waveform_layout
-from marconpa.core.configs.wave_form import Waveform
-from marconpa.core.gui.channel.components import attributes_table
-from marconpa.core.gui.utils import IdHandler
+from marconpa.gui.waveform.layout import waveform_layout
+from marconpa.core import Waveform
+from marconpa.gui.channel.components import attributes_table
+from marconpa.gui.utils import IdHandler
 
 def get_waveforms(channel):
     """

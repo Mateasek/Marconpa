@@ -1,8 +1,10 @@
 import json
-import re
-import base64
 import binascii
+import attr
+from typing import Dict, Union, Any
 
+# todo: do properly using typing and attr class
+@attr.s(kw_only=True)
 class IdHandler:
     """
     Class for handling compponent ids within dash application. It is tedious to keep track of what is connected to what
@@ -11,67 +13,77 @@ class IdHandler:
     component in some way handles something connected to waveform data.
     """
 
-    def __init__(self, name, component_type=None, parent=None):
-        self.component_type = component_type
-        self.name = name
-        self.parent = parent
+    name = attr.ib(type=str)
+    parent = attr.ib(default=None)
+    kind = attr.ib(type=str, default="")
+    attributes = attr.ib(default={}, type=Dict[str, Union[str, dict, tuple, list, int, float]])
+    callback = attr.ib(default=False, type=bool)
+    callback_property = attr.ib(default="", type=str)
+
+    @parent.validator
+    def check_parent(self, attribute, value):
+        if value is not None and not isinstance(value, IdHandler):
+            raise ValueError("parrent has to be None or instance of IdHandler")
 
     @classmethod
     def from_id(cls, id):
+        callback = False
+        if "." in id:
+            id, callback_property = str.split(id, ".")
+            callback = True
+
         string = binascii.unhexlify(id[1::].encode("ascii")).decode("ascii")
         asdict = json.loads(string)
 
-        try:
-            content = cls.from_dict(asdict["parent"])
-        except TypeError:
-            asdict["parent"] = asdict["parent"]
-        else:
-            asdict["parent"] = content
+        if asdict["parent"] is not None:
+            asdict["parent"] = cls.from_dict(asdict["parent"])
 
-        return cls(**asdict)
+        inst = cls.from_dict(asdict)
+        if callback:
+            inst.callback = True
+            inst.callback_property = callback_property
+
+        return inst
 
     @classmethod
     def from_dict(cls, dictionary):
+        if "name" not in dictionary:
+            raise KeyError("Dictionary has to include key 'name' of type str")
+        if isinstance(dictionary["parent"], dict):
+            dictionary["parent"] = cls.from_dict(dictionary["parent"])
 
         newobj = cls(**dictionary)
-
-        if isinstance(newobj.parent, dict):
-            newobj["parent"] = cls.from_dict(newobj["parent"])
-
         return newobj
 
     @property
     def id(self):
-        content = {}
-        content["component_type"] = self.component_type
-        content["name"] = self.name
-        if isinstance(self.parent, IdHandler):
-            content["parent"] = self.parent.as_dict()
-        else:
-            content["parent"] = self.parent
-
+        content = self.as_dict()
         encoded = "a" + binascii.hexlify(json.dumps(content).encode("ascii")).decode("ascii")
+        #if self.callback:
+        #    encoded += ".{}".format(self.callback_property)
         return encoded
 
     def as_dict(self):
-        content = {}
-        content["component_type"] = self.component_type
-        content["name"] = self.name
-        if isinstance(self.parent, IdHandler):
-            content["parent"] = self.parent.as_dict()
-        else:
-            content["parent"] = self.parent
+        asdict = {}
+        for attribute in self.__attrs_attrs__:
+            value =  getattr(self, attribute.name)
+            if attribute.name == "parent":
+                if value is not None:
+                    asdict["parent"] = value.as_dict()
+                else:
+                    asdict["parent"] = None
+            else:
+                asdict[attribute.name] = value
 
-        return content
-
+        return asdict
 
 if __name__ == "__main__":
 
-    comp2 = IdHandler(component_type="channel", name="SP", )
-    comp1 = IdHandler(component_type="waveform", name="table", parent=comp2)
+    #parent = IdHandler(name="parent", kind="provider", attributes={"data":"content"})
+    #child = IdHandler(name="child", parent=parent, kind="accepter", attributes={"data":"content d"})
 
-    id1 = comp1.id
-    id2 = comp2.id
+    #d = {"name": "parent", "kind": "provider", "attributes":{"data":"content"}}
+    #test = IdHandler.from_dict(d)
 
-    a = IdHandler.from_id(id1)
-    b = IdHandler.from_id(id2)
+    tid = "a7b226e616d65223a2022706c6f74222c2022706172656e74223a207b226e616d65223a2022537057617665666f726d222c2022706172656e74223a207b226e616d65223a2022466565646261636b4368616e6e656c222c2022706172656e74223a207b226e616d65223a202244656e73697479222c2022706172656e74223a206e756c6c2c20226b696e64223a2022436f6e66696746696c65222c202261747472696275746573223a207b7d7d2c20226b696e64223a20224368616e6e656c222c202261747472696275746573223a207b7d7d2c20226b696e64223a202257617665666f726d222c202261747472696275746573223a207b7d7d2c20226b696e64223a202257617665666f726d222c202261747472696275746573223a207b7d7d.value"
+    pid = IdHandler.from_id(tid)

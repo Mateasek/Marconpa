@@ -1,12 +1,6 @@
-import dash
-import dash_bootstrap_components as dbc
 import dash_core_components as dcc
-import dash_html_components as html
 import dash_table
-import pandas as pd
-from dash.dependencies import Input, Output, State
-import base64
-from marconpa.core.gui.utils import IdHandler
+from marconpa.core.gui.utils.conversions import waveformsetpoints2tabledata
 
 def waveform_table(id, setpoints):
     """
@@ -15,17 +9,8 @@ def waveform_table(id, setpoints):
     :param setpoints: Setpoints from waveform to fill the table
     :return:
     """
-    data = [
-        {
-            "index": index,
-            "x0": setpoints["x0"][index],
-            "x1": setpoints["x1"][index],
-            "y0": setpoints["y0"][index],
-            "y1": setpoints["y1"][index],
-            "Interpolation": setpoints["Interpolation"][index],
-        }
-        for index in range(setpoints["x0"].shape[0])
-    ]
+    data = waveformsetpoints2tabledata(setpoints)
+
     return dash_table.DataTable(
         id=id,
         columns=[

@@ -64,6 +64,7 @@ def generate_config_textarea(config_instance, parent_id):
 
     return textarea, textarea_id
 
+
 def generate_textarea_sendbutton(parent_id):
 
     button_id = IdHandler(name=parent_id.name, kind="sendConfigText", parent=parent_id)

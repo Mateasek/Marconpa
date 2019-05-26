@@ -57,17 +57,21 @@ def tab_structure_from_files(list_of_contents, list_of_names):
                 tab.append(contents)
                 data.append(html.Div(id=datastorage_id.id, children=to_store))
 
-            register_callbacks_datastorage(datastorage_id, callback_list)
+            register_callbacks_datastorage(callback_list)
 
     tabs = dcc.Tabs(id="config_tabs", children=tab)
     return tabs, data
 
-def register_callbacks_datastorage(storage, callback_list):
+def register_callbacks_datastorage(callback_list):
 
     #add callback updating data storage
     tables = []
     buttons = []
     textareas = []
+    insertrows_buttons = []
+    deleterows_button = []
+    insertrows_table = []
+    deleterows_dropdown = []
     for callback_id in callback_list:
         if callback_id.name == "table" and callback_id.kind in ("Waveform", "Attributes"):
             tables.append(callback_id)
@@ -75,6 +79,14 @@ def register_callbacks_datastorage(storage, callback_list):
             buttons.append(callback_id)
         elif callback_id.kind == "textArea":
             textareas.append(callback_id)
+        elif callback_id.name == "insertRowButton" and callback_id.kind == "Waveform":
+            insertrows_buttons.append(callback_id)
+        elif callback_id.name == "deleteRowButton" and callback_id.kind == "Waveform":
+            deleterows_button.append(callback_id)
+        elif callback_id.name == "insertrowTable" and callback_id.kind == "Waveform":
+            insertrows_table.append(callback_id)
+        elif callback_id.name == "deleteRowDropdown" and callback_id.kind == "Waveform":
+            deleterows_dropdown.append(callback_id)
 
     inputs = [Input(i.id, "data") for i in tables]
     outputs = [Output(i.id, "value") for i in textareas]
@@ -82,9 +94,13 @@ def register_callbacks_datastorage(storage, callback_list):
         app.callback(outputs, inputs,)(data_update_textarea)
 
     outputs = [Output(i.id, "data") for i in tables]
-    inputs = [Input(i.id, "n_clicks") for i in buttons]
     status = [State(i.id, "data") for i in tables]
-    status += [State(i.id, "value") for i in textareas]
+
+    inputs = [Input(i.id, "n_clicks") for i in buttons]
+    inputs += [Input(i.id, "n_clicks") for i in insertrows_buttons]
+    inputs += [Input(i.id, "n_clicks") for i in deleterows_button]
+    status += [State(i.id, "data") for i in insertrows_table]
+    status += [State(i.id, "value") for i in deleterows_dropdown]
 
     if not create_callback_id(outputs) in app.callback_map:
         app.callback(output=outputs, inputs=inputs, state=status)(data_update_tables)
@@ -116,6 +132,11 @@ def data_update_tables(*args):
 
     triggers, inputs, states = get_idhandlers_context(dash.callback_context)
 
+    outputs = []
+    output_tables = []
+    for state in states:
+        if state.name == "table" and state.kind in ("Waveform", "Attributes"):
+            output_tables.append(state)
 
     for trigger in triggers:
         if trigger.kind == "sendConfigText" and trigger.callback and trigger.callback_property == "n_clicks":
@@ -129,20 +150,54 @@ def data_update_tables(*args):
                     config = config_types[state.name].from_parsed(parsed)
 
 
-    output_tables = []
-    for state in states:
-        if state.name == "table" and state.kind in ("Waveform", "Attributes"):
-            output_tables.append(state)
+            for table in output_tables:
+                if table.kind == "Attributes":
+                    outputs.append(get_data_attributes(config, table))
+                if table.kind == "Waveform" and table.name == "table":
+                    outputs.append(get_data_waveform(config, table))
 
-    outputs = []
+        elif trigger.name == "insertRowButton" and trigger.callback_property == "n_clicks" and trigger.kind == "Waveform":
+            for output_table in output_tables:
+                if (trigger.parent.parent.name == output_table.parent.name and trigger.parent.kind == output_table.parent.kind and
+                    trigger.parent.name == output_table.name):
+                    for state in states:
+                        if state.name == "insertrowTable" and state.parent.name == trigger.parent.parent.name:
+                            outputs.append(insert_row_table(output_table.attributes["value"], state.attributes["value"]))
+                            break
+                else:
+                    outputs.append(output_table.attributes["value"])
 
-    for table in output_tables:
-        if table.kind == "Attributes":
-            outputs.append(get_data_attributes(config, table))
-        if table.kind == "Waveform" and table.name == "table":
-            outputs.append(get_data_waveform(config, table))
+        elif trigger.name == "deleteRowButton" and trigger.callback_property == "n_clicks" and trigger.kind == "Waveform":
+            for output_table in output_tables:
+                if (trigger.parent.parent.name == output_table.parent.name and
+                        trigger.parent.kind == output_table.parent.kind and trigger.parent.name == output_table.name):
+                    for state in states:
+                        if state.name == "deleteRowDropdown" and state.id == trigger.parent.idd:
+                            outputs.append(delete_row_waveform(output_table.attributes["value"], state.attributes["value"]))
+                            break
+                else:
+                    outputs.append(output_table.attributes["value"])
 
     return outputs
+
+def delete_row_waveform(table_data, rownumber):
+    rownumber = rownumber
+    table_data.pop(rownumber)
+    for i in range(len(table_data)):
+        table_data["index"] = str(i)
+
+    return table_data
+
+def insert_row_table(table_data, row):
+    index = int(row[0]["index"])
+    if index < 0 or index > len(table_data):
+        table_data += row
+        table_data[-1]["index"] = str(len(table_data) - 1)
+    else:
+        table_data.insert(index, row[0])
+        for i in range(index+1, len(table_data)):
+            table_data[i]["index"] = str(int(table_data[i]["index"])+1)
+    return table_data
 
 def get_idhandlers_context(context):
     triggers =[]

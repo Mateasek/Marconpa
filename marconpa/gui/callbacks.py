@@ -93,8 +93,13 @@ def register_callbacks_datastorage(callback_list):
     if not create_callback_id(outputs) in app.callback_map:
         app.callback(outputs, inputs,)(data_update_textarea)
 
+    #the first part of outputs and states containing tables has to be identical!
+    #table outputs are identified through states
     outputs = [Output(i.id, "data") for i in tables]
     status = [State(i.id, "data") for i in tables]
+
+    #add contents of textarea through state
+    status += [State(i.id, "value") for i in textareas]
 
     inputs = [Input(i.id, "n_clicks") for i in buttons]
     inputs += [Input(i.id, "n_clicks") for i in insertrows_buttons]
@@ -135,60 +140,45 @@ def data_update_tables(*args):
     outputs = []
     output_tables = []
     for state in states:
-        if state.name == "table" and state.kind in ("Waveform", "Attributes"):
-            output_tables.append(state)
-
-    for trigger in triggers:
-        if trigger.idhandler.kind == "sendConfigText" and trigger.callback_property == "n_clicks":
-            for state in states:
-                if state.idhandler.kind == "textArea" and state.idhandler.name == trigger.idhandler.name:
-                    parser = MarteConfigParser()
-                    #try:
-                    parsed = parser.parse_config(state.callback_data)
-                    #except Exception:
-                    #    raise dash.exceptions.PreventUpdate()
-                    config = config_types[state.idhandler.name].from_parsed(parsed)
-
-
-    output_tables = []
-    for state in states:
         if state.idhandler.name == "table" and state.idhandler.kind in ("Waveform", "Attributes"):
             output_tables.append(state)
 
-        elif trigger.name == "insertRowButton" and trigger.callback_property == "n_clicks" and trigger.kind == "Waveform":
-            for output_table in output_tables:
-                if (trigger.parent.parent.name == output_table.parent.name and trigger.parent.kind == output_table.parent.kind and
-                    trigger.parent.name == output_table.name):
-                    for state in states:
-                        if state.name == "insertrowTable" and state.parent.name == trigger.parent.parent.name:
-                            outputs.append(insert_row_table(output_table.attributes["value"], state.attributes["value"]))
-                            break
-                else:
-                    outputs.append(output_table.attributes["value"])
 
-    for table in output_tables:
-        if table.idhandler.kind == "Attributes":
-            outputs.append(get_data_attributes(config, table))
-        if table.idhandler.kind == "Waveform" and table.idhandler.name == "table":
-            outputs.append(get_data_waveform(config, table))
-        elif trigger.name == "deleteRowButton" and trigger.callback_property == "n_clicks" and trigger.kind == "Waveform":
+    for trigger in triggers:
+        #react to callback fired by sendConfigTextArea button press
+        if trigger.idhandler.kind == "sendConfigText" and trigger.callback_property == "n_clicks":
+            for state in states:
+                if state.idhandler.kind == "textArea" and state.idhandler.name == trigger.idhandler.name:
+                    outputs = fired_by_textarea_sendtext(state, output_tables, outputs)
+        #react to callback fired by add row button in waveform or attributes
+        elif (trigger.callback_property == "n_clicks" and trigger.idhandler.name == "insertRowButton" and
+              trigger.idhandler.parent.kind in ("Waveform", "Attributes")):
             for output_table in output_tables:
-                if (trigger.parent.parent.name == output_table.parent.name and
-                        trigger.parent.kind == output_table.parent.kind and trigger.parent.name == output_table.name):
+                if trigger.idhandler.parent.id == output_table.idhandler.id:
                     for state in states:
-                        if state.name == "deleteRowDropdown" and state.id == trigger.parent.idd:
-                            outputs.append(delete_row_waveform(output_table.attributes["value"], state.attributes["value"]))
+                        if state.idhandler.parent.id == trigger.idhandler.id:
+                            outputs.append(insert_row_table(output_table.callback_data, state.callback_data))
                             break
                 else:
-                    outputs.append(output_table.attributes["value"])
+                    outputs.append(output_table.callback_data)
+
+        elif (trigger.callback_property == "n_clicks" and trigger.idhandler.name == "deleteRowButton" and
+              trigger.idhandler.parent.kind in ("Waveform", "Attributes")):
+            for output_table in output_tables:
+                if trigger.idhandler.parent.id == output_table.idhandler.id:
+                    for state in states:
+                        if state.idhandler.parent.id == trigger.idhandler.id:
+                            outputs.append(delete_row_waveform(output_table.callback_data, state.callback_data))
+                            break
+                else:
+                    outputs.append(output_table.callback_data)
 
     return outputs
 
 def delete_row_waveform(table_data, rownumber):
-    rownumber = rownumber
     table_data.pop(rownumber)
-    for i in range(len(table_data)):
-        table_data["index"] = str(i)
+    for index, row in enumerate(table_data):
+        row["index"] = str(index)
 
     return table_data
 
@@ -217,7 +207,6 @@ def get_idhandlers_context(context):
         states.append(CallbackHandler.from_callback_context(key, item))
 
     return triggers, inputs, states
-
 
 def get_data_attributes(config, table):
 
@@ -328,4 +317,22 @@ def set_channelwaveform_from_waveformtable(config, table):
         config.waveform = waveform
 
     return config
+
+def fired_by_textarea_sendtext(state,output_tables, outputs):
+
+    parser = MarteConfigParser()
+    #try:
+    parsed = parser.parse_config(state.callback_data)
+    #except Exception:
+    #    raise dash.exceptions.PreventUpdate()
+    config = config_types[state.idhandler.name].from_parsed(parsed)
+
+    for table in output_tables:
+        if table.idhandler.kind == "Attributes":
+            outputs.append(get_data_attributes(config, table))
+        if table.idhandler.kind == "Waveform" and table.idhandler.name == "table":
+            outputs.append(get_data_waveform(config, table))
+
+
+    return outputs
 

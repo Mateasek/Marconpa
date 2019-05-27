@@ -1,6 +1,6 @@
 import dash_bootstrap_components as dbc
 import dash_html_components as html
-from dash.dependencies import Input, Output, State
+from dash.dependencies import Input, Output
 import pandas as pd
 from dash._utils import create_callback_id
 import dash
@@ -24,11 +24,11 @@ def waveform_layout(waveform, waveform_name, parent_id):
 
     graph, graph_id = waveform_plot(parent_id=waveform_id, setpoints=waveform.return_SetPoints())
 
-    insert_table, insert_table_id = insert_row_table(table_id)
     insert_button, insert_button_id = insert_row_button(table_id)
+    insert_table, insert_table_id = insert_row_table(insert_button_id)
 
     delete_button, delete_button_id = deleterow_button(table_id)
-    dropdown, dropdown_id = dropdown_delete_row(table_id)
+    dropdown, dropdown_id = dropdown_delete_row(delete_button_id)
 
     table_changes = dbc.Row([dbc.Col(insert_table), dbc.Col(insert_button),
                              dbc.Col(dropdown), dbc.Col(delete_button)])
@@ -45,7 +45,7 @@ def waveform_layout(waveform, waveform_name, parent_id):
 
     #add calback to update dropdown menu for row deletion
     output = Output(dropdown_id.id, "options")
-    if not create_callback_id(output):
+    if not create_callback_id(output) in app.callback_map:
         app.callback(output, [Input(table_id.id, "data")])(callback_update_drwopdown_deleterows)
 
     return return_div, [table_id, graph_id, insert_table_id, insert_table_id, insert_button_id, delete_button_id, dropdown_id]

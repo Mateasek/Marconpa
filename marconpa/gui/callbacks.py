@@ -14,7 +14,7 @@ from marconpa.core import (
 )
 
 from marconpa.gui.components import generate_tab_channels, generate_tab_waveform
-from marconpa.gui.utils import IdHandler
+from marconpa.gui.utils import IdHandler, CallbackHandler
 from marconpa.gui.utils.conversions import waveformsetpoints2tabledata, channelattributes2tabledata, tabledata2channelattributes, callback_table_as_waveform
 from marconpa.gui.app import app, CONFIG_NAMES
 from copy import copy, deepcopy
@@ -94,7 +94,7 @@ def data_update_textarea(*args):
     triggers, inputs, states =get_idhandlers_context(dash.callback_context)
 
     cont = True
-    level = triggers[0]
+    level = triggers[0].idhandler
     while cont:
         if level.parent is not None:
             level = level.parent
@@ -105,9 +105,9 @@ def data_update_textarea(*args):
         config = config_types[level.name]()
 
     for table in inputs:
-        if table.kind == "Attributes":
+        if table.idhandler.kind == "Attributes":
             config = set_channelattributes_from_attributestable(config, table)
-        elif table.kind == "Waveform" and table.name == "table":
+        elif table.idhandler.kind == "Waveform" and table.idhandler.name == "table":
             config = set_channelwaveform_from_waveformtable(config, table)
 
     return [config.as_string()]
@@ -118,28 +118,28 @@ def data_update_tables(*args):
 
 
     for trigger in triggers:
-        if trigger.kind == "sendConfigText" and trigger.callback and trigger.callback_property == "n_clicks":
+        if trigger.idhandler.kind == "sendConfigText" and trigger.callback_property == "n_clicks":
             for state in states:
-                if state.kind == "textArea" and state.name == trigger.name:
+                if state.idhandler.kind == "textArea" and state.idhandler.name == trigger.idhandler.name:
                     parser = MarteConfigParser()
                     #try:
-                    parsed = parser.parse_config(state.attributes["value"])
+                    parsed = parser.parse_config(state.callback_data)
                     #except Exception:
                     #    raise dash.exceptions.PreventUpdate()
-                    config = config_types[state.name].from_parsed(parsed)
+                    config = config_types[state.idhandler.name].from_parsed(parsed)
 
 
     output_tables = []
     for state in states:
-        if state.name == "table" and state.kind in ("Waveform", "Attributes"):
+        if state.idhandler.name == "table" and state.idhandler.kind in ("Waveform", "Attributes"):
             output_tables.append(state)
 
     outputs = []
 
     for table in output_tables:
-        if table.kind == "Attributes":
+        if table.idhandler.kind == "Attributes":
             outputs.append(get_data_attributes(config, table))
-        if table.kind == "Waveform" and table.name == "table":
+        if table.idhandler.kind == "Waveform" and table.idhandler.name == "table":
             outputs.append(get_data_waveform(config, table))
 
     return outputs
@@ -147,29 +147,22 @@ def data_update_tables(*args):
 def get_idhandlers_context(context):
     triggers =[]
     for trigger in context.triggered:
-        trigger__id = trigger["prop_id"]
-        idh = IdHandler.from_id(trigger__id)
-        idh.attributes["value"] = trigger["value"]
-        triggers.append(idh)
+        triggers.append(CallbackHandler.from_callback_context(trigger["prop_id"], trigger["value"]))
 
     inputs = []
     for key, item in context.inputs.items():
-        idh = IdHandler.from_id(key)
-        idh.attributes["value"] = item
-        inputs.append(idh)
+        inputs.append(CallbackHandler.from_callback_context(key, item))
 
     states = []
     for key, item in context.states.items():
-        idh = IdHandler.from_id(key)
-        idh.attributes["value"] = item
-        states.append(idh)
+        states.append(CallbackHandler.from_callback_context(key, item))
 
     return triggers, inputs, states
 
 
 def get_data_attributes(config, table):
 
-    level = table.parent
+    level = table.idhandler.parent
     cont = True
     table_member = {}
 
@@ -191,7 +184,7 @@ def get_data_attributes(config, table):
 
 def get_data_waveform(config, table):
 
-    level = table
+    level = table.idhandler
     cont = True
     table_member = {}
     while cont:
@@ -225,8 +218,8 @@ def set_channelattributes_from_attributestable(config, table):
 
 
 
-    attributes = tabledata2channelattributes(table.attributes["value"])
-    level = table.parent
+    attributes = tabledata2channelattributes(table.callback_data)
+    level = table.idhandler.parent
     cont = True
     table_member = {}
 
@@ -247,8 +240,8 @@ def set_channelattributes_from_attributestable(config, table):
 
 def set_channelwaveform_from_waveformtable(config, table):
 
-    waveform = callback_table_as_waveform(table.attributes["value"])
-    level = table
+    waveform = callback_table_as_waveform(table.callback_data)
+    level = table.idhandler
     cont = True
     table_member = {}
     while cont:

@@ -13,12 +13,10 @@ class IdHandler:
     component in some way handles something connected to waveform data.
     """
 
-    name = attr.ib(type=str)
+    name = attr.ib(type=str, default="")
     parent = attr.ib(default=None)
     kind = attr.ib(type=str, default="")
     attributes = attr.ib(default={}, type=Dict[str, Union[str, dict, tuple, list, int, float]])
-    callback = attr.ib(default=False, type=bool)
-    callback_property = attr.ib(default="", type=str)
 
     @parent.validator
     def check_parent(self, attribute, value):
@@ -29,8 +27,7 @@ class IdHandler:
     def from_id(cls, id):
         callback = False
         if "." in id:
-            id, callback_property = str.split(id, ".")
-            callback = True
+            id = str.split(id, ".")[0]
 
         string = binascii.unhexlify(id[1::].encode("ascii")).decode("ascii")
         asdict = json.loads(string)
@@ -39,9 +36,6 @@ class IdHandler:
             asdict["parent"] = cls.from_dict(asdict["parent"])
 
         inst = cls.from_dict(asdict)
-        if callback:
-            inst.callback = True
-            inst.callback_property = callback_property
 
         return inst
 
